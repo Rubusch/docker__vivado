@@ -6,12 +6,12 @@
 ################################################################################
 ## base image settings
 ARG USER="${USER}"
-ARG DOCKER_BASE="peta-2020.2"
-ARG DOCKER_BASE_TAG="peta2020.2-DEVEL"
+ARG DOCKER_BASE="peta-2022.1"
+ARG DOCKER_BASE_TAG="peta2022.1-DEVEL"
 
 ################################################################################
 ## base image
-FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS xilinx-2020.2
+FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS xilinx-2022.1
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -23,7 +23,7 @@ ARG XILINXMAIL="${XILINXMAIL}"
 ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2020.2"
+ENV XILINXVERSION="2022.1"
 
 
 ################################################################################

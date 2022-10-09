@@ -80,7 +80,7 @@ $ ./setup.sh
 ```
 $ cd ./docker
 $ xhost +
-$ docker-compose -f ./docker-compose.yml run --rm xilinx-2020.2 /bin/bash
+$ docker-compose -f ./docker-compose.yml run --rm xilinx-2022.1 /bin/bash
 docker$  vivado &
 ...
 $ xhost -
