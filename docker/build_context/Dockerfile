@@ -7,7 +7,7 @@
 ## base image settings
 ARG USER="${USER}"
 ARG DOCKER_BASE="peta-2020.2"
-ARG DOCKER_BASE_TAG="peta2020.2-DEVEL"
+ARG DOCKER_BASE_TAG="peta2020.2-20221011"
 
 ################################################################################
 ## base image
