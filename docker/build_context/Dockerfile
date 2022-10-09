@@ -7,11 +7,11 @@
 ## base image settings
 ARG USER="${USER}"
 ARG DOCKER_BASE="peta-2020.2"
-
+ARG DOCKER_BASE_TAG="peta2020.2-DEVEL"
 
 ################################################################################
 ## base image
-FROM ${USER}/${DOCKER_BASE} AS xilinx-2020.2
+FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS xilinx-2020.2
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
