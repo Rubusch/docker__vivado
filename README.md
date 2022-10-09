@@ -28,10 +28,10 @@ $ sudo usermod -aG docker $USER
 Prepare build by providing the Xilinx Vivado Linux 64 .bin file, e.g.  
 
 ```
-$ cp <Downloads>/Vivado_2020.2/Xilinx_Unified_2020.2_0420_0327_Lin64.bin ./docker/build_context/
+$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./docker/build_context/
 ```
 
-!!! **Prepare Xilinx login credentials, append the following variables**  
+!!! **Prepare Xilinx login credentials, append the following variables** !!!   
 
 ```
 $ vi ./docker/.env
