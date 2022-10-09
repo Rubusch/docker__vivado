@@ -23,6 +23,7 @@ ARG XILINXMAIL="${XILINXMAIL}"
 ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV SCRIPTS="/home/$USER/scripts"
+ENV XILINXVERSION="2020.2"
 
 
 ################################################################################
@@ -62,11 +63,11 @@ RUN ./20_*.exp "$XILINXMAIL" "$XILINXLOGIN"
 RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
 ## install libs
-WORKDIR /tools/Xilinx/Vitis/2020.2/scripts
+WORKDIR /tools/Xilinx/Vitis/$XILINXVERSION/scripts
 RUN sudo ./installLibs.sh
 
 ## install JTAG driver
-WORKDIR /tools/Xilinx/Vivado/2020.2/data/xicom/cable_drivers/lin64/install_script/install_drivers
+WORKDIR /tools/Xilinx/Vivado/$XILINXVERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
 
 ## cleanup
