@@ -1,0 +1,26 @@
+From c1117a069956f8865713b8d6457bfcd55d565f7c Mon Sep 17 00:00:00 2001
+From: Lothar Rubusch <XXXXX>
+Date: Sun, 4 Sep 2022 17:00:30 +0000
+Subject: [PATCH] modified
+
+Signed-off-by: Lothar Rubusch <XXXXX>
+---
+ install_config.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/install_config.txt b/install_config.txt
+index 3321bb2..1093690 100644
+--- a/install_config.txt
++++ b/install_config.txt
+@@ -7,7 +7,7 @@ Product=Vitis
+ Destination=/tools/Xilinx
+ 
+ # Choose the Products/Devices the you would like to install.
+-Modules=Virtex UltraScale+ 58G:1,Virtex UltraScale+ 58G ES:0,Versal Prime Series ES1:0,Install Devices for Kria SOMs and Starter Kits:1,Vitis IP Cache (Enable faster on-boarding for new users):0,Zynq-7000:1,Versal AI Edge Series:1,Kintex UltraScale+:1,Artix UltraScale+:1,Spartan-7:1,Install devices for Alveo and Xilinx edge acceleration platforms:1,Engineering Sample Devices for Custom Platforms:0,Versal AI Core Series:1,Versal Premium Series ES1:0,Artix-7:1,Zynq UltraScale+ MPSoC:1,DocNav:1,Virtex UltraScale+ HBM:1,Kintex-7:1,Virtex UltraScale+:1,Versal AI Core Series ES1:0,Vitis Model Composer(Xilinx Toolbox for MATLAB and Simulink. Includes the functionality of System Generator for DSP):1,Versal Premium Series:1,Kintex UltraScale:1,Virtex UltraScale:1,Versal Prime Series:1,Versal HBM Series ES1:0,Zynq UltraScale+ RFSoC:1,Virtex-7:1,Virtex UltraScale+ HBM ES:0,Versal AI Edge Series ES1:0,Zynq UltraScale+ RFSoC ES:0
++Modules=Virtex UltraScale+ 58G:1
+ 
+ # Choose the post install scripts you'd like to run as part of the finalization step. Please note that some of these scripts may require user interaction during runtime.
+ InstallOptions=
+-- 
+2.25.1
+
