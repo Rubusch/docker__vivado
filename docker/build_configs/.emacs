@@ -33,10 +33,8 @@
 ;; find-file, writing another filename shadows suggestion
 (setq file-name-shadow-mode 1)
 
-
 ;; backspace fun
 (define-key global-map "\C-h" 'backward-delete-char)
-
 
 ;;; general programming
 ;; 80 column rule
@@ -64,7 +62,6 @@
 ;;; highlight matching parenthesis
 (show-paren-mode t)
 
-
 ;;; doxymacs
 ;; doxymacs is an .el package to use doxygen in emacs
 ;; aptitude install doxymacs
@@ -81,37 +78,6 @@
 
 ;; start doxymacs when opening c/c++ file
 ;(add-hook 'c-mode-common-hook'doxymacs-mode)
-
-;; individual settings, link doxymacs to fetch runtime info from doxygen
-;(setq doxymacs-doxygen-tags "/media/shared/sources/NX_CORE2__etags/ApplicationTest/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/AuthenticationService/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/build_powerpc_debug/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/CanOpen/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Car/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/CDD/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Commons/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Configuration/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/EmbeddedTM/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Gate/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Interfaces/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/KSC/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/MonitoringSupervisor/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/NX100NA/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/OMSServer/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Portal/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/PORTServer/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Processes/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/ServiceHandler/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/TMC/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Tools/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/World/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/ZeroMOM/TAGS"
-;)
-;(setq doxymacs-doxygen-root "/media/shared/sources/NX_CORE2__html")
-
-
-
-
 ;; enable fancy doxygen highlight mode
 ;(defun my-doxymacs-font-lock-hook ()
 ;  (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
@@ -121,13 +87,10 @@
 ;; load doxymacs at startup
 ;(require 'doxymacs)
 
-
-
 ;;; general C/C++ indention
 ;(autoload 'c++-mode "C++ Editing Mode" t)
 ;(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 ;(cpp-font-lock-use-font-lock-faces t)
-
 
 ;;; general C
 ;; Linus' kernel formatting
@@ -142,7 +105,6 @@
 ;(setq c-basic-offset 2)
 )
 (add-hook 'c-mode-hook 'linux-c-mode)
-
 
 ;;; kernel documentation's kernel formatting
 ;;
@@ -175,8 +137,6 @@
 ;;                 (setq indent-tabs-mode t)
 ;;                 (c-set-style "linux-tabs-only")))))
 
-
-
 ;;; C++ formatting
 ;;
 ;; (c-set-style "stroustrup")
@@ -203,10 +163,8 @@
 ;;             (set (make-local-variable 'eldoc-documentation-function)
 ;;                  'my-cperl-eldoc-documentation-function)))
 
-
 ;; goto-line command: M-g g <linenumber>
 (global-set-key "\M-gg" 'goto-line)
-
 
 ;; hovering on parenthesis, use "%" / M-x goto-match-paren to jump to the
 ;; matching parenthesis.
@@ -219,8 +177,6 @@ the character typed."
     (t                    (self-insert-command (or arg 1))) ))
 (global-set-key "%" `goto-match-paren)
 
-
-
 ;; emacsclient / server
 ;;
 ;; add the below code to your .emacs file. Call it w/ M-x server-shutdown
@@ -231,9 +187,6 @@ the character typed."
   (save-some-buffers)
   (kill-emacs)
   )
-
-
-
 
 ;; emacs and screen settings
 ;;
@@ -260,9 +213,6 @@ the character typed."
 (global-set-key "\M-[1;2A"    'previous-line)     ; shift+up
 (global-set-key "\M-[1;2B"    'next-line)         ; shift+down
 
-
-
-
 ;; auto-completion.el - on the fly autocomplete
 ;(require 'auto-complete)
 ;(global-auto-complete-mode t)
@@ -274,36 +224,6 @@ the character typed."
 ;    font-lock-face eshell-prompt
 ;    front-sticky (font-lock-face read-only)
 ;    rear-nonsticky (font-lock-face read-only))
-
-
-
-
-;(setq tags-table-list '(
-;"/media/shared/sources/NX_CORE2__etags/ApplicationTest/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/AuthenticationService/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/build_powerpc_debug/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/CanOpen/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Car/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/CDD/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Commons/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Configuration/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/EmbeddedTM/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Gate/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Interfaces/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/KSC/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/MonitoringSupervisor/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/NX100NA/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/OMSServer/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Portal/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/PORTServer/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Processes/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/ServiceHandler/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/TMC/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/Tools/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/World/TAGS"
-;"/media/shared/sources/NX_CORE2__etags/ZeroMOM/TAGS"
-;))
-
 
 ;; bitbake & yocto mode
 ;; download: https://github.com/mferland/bb-mode
