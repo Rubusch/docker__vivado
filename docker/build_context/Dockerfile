@@ -60,7 +60,7 @@ RUN ./10_*.exp
 #RUN cd /home/$USER/.Xilinx/ && patch -p1 -i $SCRIPTS/install-config.patch
 
 RUN ./20_*.exp "$XILINXMAIL" "$XILINXLOGIN"
-RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --batch Install --config /home/$USER/.Xilinx/install_config.txt
+RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
 ## install libs
 WORKDIR /tools/Xilinx/Vitis/$XILINXVERSION/scripts
