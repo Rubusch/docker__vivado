@@ -51,7 +51,8 @@ fi
 build "./${DOCKERDIR}" "${DRYRUN}"
 
 ## remove credentials
-echo "!!! Docker finished, removing .env file !!!"
+echo "!!! Docker finished, resetting .env file !!!"
 cd "./docker"
-rm -f .env
+echo "UID=$(id -u)" > .env
+echo "GID=$(id -g)" >> .env
 echo "READY."
