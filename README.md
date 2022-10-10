@@ -22,6 +22,11 @@ Make sure to have docker setup correctly, e.g.
 $ sudo usermod -aG docker $USER
 ```
 
+Make sure to have:  
+  - ``Xilinx_Unified_*_Lin64.bin`` downloaded
+  - ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
+  - A xilinx account is needed to install the packages (usually free), and to provide the credentials
+
 
 ## Build
 
