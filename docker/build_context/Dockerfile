@@ -42,6 +42,7 @@ RUN mkdir $SCRIPTS
 COPY *.bin $SCRIPTS/
 COPY *.exp $SCRIPTS/
 COPY *.patch $SCRIPTS/
+COPY *.zip $SCRIPTS/
 
 RUN chown ${USER}:${USER} -R $SCRIPTS
 RUN chmod a+x $SCRIPTS/*.exp
@@ -69,6 +70,14 @@ RUN sudo ./installLibs.sh
 ## install JTAG driver
 WORKDIR /tools/Xilinx/Vivado/$XILINXVERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
+
+## Xilnix y2k patch
+## https://support.xilinx.com/s/article/76960?language=en_US
+WORKDIR $SCRIPTS
+RUN unzip y2k22_patch-*.zip
+WORKDIR /tools/Xilinx
+RUN cp -arf $SCRIPTS/y2k22_patch .
+RUN export LD_LIBRARY_PATH=/tools/Xilinx/Vivado/2020.2/tps/lnx64/python-3.8.3/lib/ && /tools/Xilinx/Vivado/2020.2/tps/lnx64/python-3.8.3/bin/python3 ./y2k22_patch/patch.py
 
 ## cleanup
 USER root
