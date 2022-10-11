@@ -16,7 +16,10 @@ services:
         user: "${UID}:${GID}"    ## docker run --user=$USER
         stdin_open: true         ## docker run -i
         tty: true                ## docker run -t
-        #privileged: true
+        ## allow privileged for vivado, since we're containering
+        ## a build environment mainly for reproducability and we
+        ## know what we're doing (hopefully)
+        privileged: true
         environment:
           - USER
           - DISPLAY=$DISPLAY
