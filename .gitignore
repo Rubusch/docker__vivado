@@ -11,7 +11,8 @@ workspace
 resources
 
 ## docker base image
-base*04
+ubu*04
+peta-*
 
 ## docker environment
 .env
