@@ -28,42 +28,60 @@ Make sure to have:
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
 
-## Build
+## Prepare
 
-Prepare build by providing the Xilinx Vivado Linux 64 .bin file, e.g.  
-
-```
-$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./docker/build_context/
-```
+Prepare build by providing files..
 
 !!! **Prepare Xilinx login credentials, append the following variables** !!!   
 
+
+### 1. Provide Xinlinx Vivado Installer
+
 ```
-$ vi ./docker/.env
-    UID=<my uid>
-    GID=<my gid>
+$ mkdir ./download
+$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
+```
+
+### 2. Provide Petalinux Installer
+
+Only if no corresponding petalinux container is still around.  
+
+```
+$ cp <Downloads>/petalinux-*-installer.run ./download
+```
+
+### 3. Provide Credentials
+
+Only when installing Vivado, not needed for usage.
+
+```
+$ echo "UID=$(id -u)" > ./download/.env
+$ echo "GID=$(id -g)" >> ./download/.env
+$ vi ./download/.env
+    ...
     XILINXMAIL='<my email>'
     XILINXLOGIN='<my xilinx password>'
 ```
-NB: this is only needed for container creation, it is not stored inside the
-container, and after the container was build, the entries can be removed from
-the .env file again! The .env is also not tracked by git.  
+NB: Credentials are only needed for container creation. They are not stored
+inside the container, or after the container was built. The entries can be
+removed from the .env file again, if not overwritten during installation!
+The .env is not tracked by git.
 
-run the installation
+
+## Build and Usage
 
 ```
 $ ./setup.sh
 ```
 
-issue: installLibs.sh not found  
-check: did you prepare ./docker.env as above? Is the internet connection available?
 
-
-## Usage
+### Manual Usage
 
 ```
 $ cd ./docker
 $ xhost +
 $ docker-compose -f ./docker-compose.yml run --rm xilinx-2020.2 /bin/bash
 docker$  vivado &
+...
+$ xhost -
 ```
