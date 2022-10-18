@@ -28,7 +28,7 @@ services:
         volumes:
           ## folders not need to be around
           - /tmp/.X11-unix:/tmp/.X11-unix
-          - ~/.Xauthority:/root/.Xauthority
+          - ~/.Xauthority:/home/${USER}/.Xauthority:ro
           - ~/.gitconfig:/home/${USER}/.gitconfig:ro
           - ~/.ssh:/home/${USER}/.ssh
           - ./workspace:/home/${USER}/workspace
