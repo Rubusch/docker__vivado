@@ -3,7 +3,11 @@
 # Container for Xilinx Vivado
 
 Docker for Xilinx Vivado IDE. Staged build on external base container.  
-**!!! Check out a tagged version in order to build!!!**
+
+**!!! ATTENTION !!!  
+
+!!! Check out a git BRANCH to build an environment !!!  
+!!! The "main" branch will not build !!!**  
 
 
 ## Tools Needed
