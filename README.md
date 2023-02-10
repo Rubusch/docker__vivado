@@ -4,13 +4,15 @@
 
 Docker for Xilinx Vivado IDE. Staged build on external base container.  
 
-**!!! ATTENTION !!!  
+- [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
+- [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.2)
 
-!!! Check out a git BRANCH to build an environment !!!  
-!!! The "main" branch will not build !!!**  
+**!!! Check out a tagged version in order to build!!!**
 
 
-## Tools Needed
+## Requirements
+
+Tools needed  
 
 ```
 $ sudo apt-get install -y libffi-dev libssl-dev
@@ -34,9 +36,9 @@ Make sure to have:
 
 ## Prepare
 
-Prepare build by providing files..
+Prepare build by providing files..  
 
-!!! **Prepare Xilinx login credentials, append the following variables** !!!   
+!!! **Prepare Xilinx login credentials, append the following variables** !!!  
 
 
 ### 1. Provide Xinlinx Vivado Installer
@@ -56,7 +58,7 @@ $ cp <Downloads>/petalinux-*-installer.run ./download
 
 ### 3. Provide Credentials
 
-Only when installing Vivado, not needed for usage.
+Only when installing Vivado, not needed for usage.  
 
 ```
 $ echo "UID=$(id -u)" > ./download/.env
@@ -69,7 +71,7 @@ $ vi ./download/.env
 NB: Credentials are only needed for container creation. They are not stored
 inside the container, or after the container was built. The entries can be
 removed from the .env file again, if not overwritten during installation!
-The .env is not tracked by git.
+The .env is not tracked by git.  
 
 
 ## Build and Usage
@@ -83,9 +85,7 @@ $ ./setup.sh
 
 ```
 $ cd ./docker
-$ xhost +
 $ docker-compose -f ./docker-compose.yml run --rm xilinx-2020.2 /bin/bash
 docker$  vivado &
 ...
-$ xhost -
 ```
