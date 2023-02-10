@@ -7,7 +7,7 @@
 ## base image settings
 ARG USER="${USER}"
 ARG DOCKER_BASE="peta-2022.1"
-ARG DOCKER_BASE_TAG="peta2022.1-20221011"
+ARG DOCKER_BASE_TAG="peta2022.1-20230207"
 
 ################################################################################
 ## base image
