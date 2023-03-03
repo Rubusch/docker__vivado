@@ -33,16 +33,18 @@ BASE_IMAGE="$(grep "ARG DOCKER_BASE=" -r "${DOCKERDIR}/build_context/Dockerfile"
 BASE_IMAGE_TAG="$(grep "ARG DOCKER_BASE_TAG" -r "${DOCKERDIR}/build_context/Dockerfile" | awk -F= '{ print $2 }' | tr -d '"')"
 IMAGE="$( grep "^FROM" -HIrn ${DOCKERDIR}/build_context/Dockerfile | awk '{ print $NF }' )"
 VERSION="$( echo ${IMAGE} | awk -F'-' '{print $NF}' )"
-CONTAINER="$(docker images | grep "${BASE_IMAGE}" | grep "${BASE_IMAGE_TAG}" | awk '{print $3}')"
+
 ## NB: check for particular user, when different user prefixed images are around
 
-## checks
+## checks (fast, or login right away)
+CONTAINER="$(docker images | grep "${BASE_IMAGE}" | grep "${BASE_IMAGE_TAG}" | awk '{print $3}')" || true
 if [ -z "${CONTAINER}" ]; then
 	## base not around, build
 	DO_BUILDBASE=1
 	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
 fi
-CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )"
+
+CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )" || true
 if [ -z "${CONTAINER}" ]; then
 	## container is not around, build
 	DO_BUILD=1
@@ -56,7 +58,7 @@ else
 	exit 0
 fi
 
-## build
+## build (slow)
 if [ -n "${DO_BUILDBASE}" ]; then
 	git clone "https://github.com/Rubusch/docker__petalinux.git" "${BASE_IMAGE}" || die "Could not clone petalinux repo"
 	cd "${BASE_IMAGE}"
