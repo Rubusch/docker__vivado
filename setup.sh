@@ -19,9 +19,9 @@ build()
 	CONTAINER_NAME="$(grep "container_name:" -r "${1}/docker-compose.yml" | awk -F: '{ print $2 }' | tr -d ' ')"
 	cd "${1}"
 	if [ -n "${2}" ]; then
-		docker-compose build -d --remove-orphans
+		docker-compose build
 	else
-		docker-compose up -d --remove-orphans --exit-code-from "${CONTAINER_NAME}"
+		docker-compose up --exit-code-from "${CONTAINER_NAME}"
 	fi
 	cd -
 }
@@ -46,18 +46,17 @@ VERSION="$( echo ${IMAGE} | awk -F'-' '{print $NF}' )"
 
 ## NB: check for particular user, when different user prefixed images are around
 
-## checks (fast, or login right away)
+## decide or start existing container
 CONTAINER="$(docker images | grep "${BASE_IMAGE}" | grep "${BASE_IMAGE_TAG}" | awk '{print $3}')" || true
 if [ -z "${CONTAINER}" ]; then
 	## base not around, build
 	DO_BUILDBASE=1
-	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
+	DO_BUILD=1
 else
 	CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )" || true
 	if [ -z "${CONTAINER}" ]; then
 		## container is not around, build
 		DO_BUILD=1
-		test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 	else
 		## container around, start
 		cd "${DOCKERDIR}"
@@ -71,6 +70,15 @@ else
 		## exit success
 		exit 0
 	fi
+fi
+
+## checks
+if [ -n "${DO_BUILDBASE}" ]; then
+	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
+fi
+
+if [ -n "${DO_BUILD}" ]; then
+	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 fi
 
 ## build (slow)
