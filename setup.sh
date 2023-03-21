@@ -19,9 +19,9 @@ build()
 	CONTAINER_NAME="$(grep "container_name:" -r "${1}/docker-compose.yml" | awk -F: '{ print $2 }' | tr -d ' ')"
 	cd "${1}"
 	if [ -n "${2}" ]; then
-		docker-compose build
+		docker-compose build -d --remove-orphans
 	else
-		docker-compose up --exit-code-from "${CONTAINER_NAME}"
+		docker-compose up -d --remove-orphans --exit-code-from "${CONTAINER_NAME}"
 	fi
 	cd -
 }
@@ -80,7 +80,7 @@ if [ -n "${DO_BUILDBASE}" ]; then
 	git checkout "${BASE_IMAGE_TAG}"
 	link "${TOPDIR}/${DOWNLOADDIR}"/.env ./docker/
 	mv ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run "./docker/build_context/"
-	./setup.sh
+	./setup.sh "build"
 	cd "${TOPDIR}"
 fi
 if [ -n "${DO_BUILD}" ]; then
