@@ -19,9 +19,9 @@ build()
 	CONTAINER_NAME="$(grep "container_name:" -r "${1}/docker-compose.yml" | awk -F: '{ print $2 }' | tr -d ' ')"
 	cd "${1}"
 	if [ -n "${2}" ]; then
-		docker-compose build -d --remove-orphans
+		docker-compose build
 	else
-		docker-compose up -d --remove-orphans --exit-code-from "${CONTAINER_NAME}"
+		docker-compose up --exit-code-from "${CONTAINER_NAME}"
 	fi
 	cd -
 }
