@@ -6,12 +6,12 @@
 ################################################################################
 ## base image settings
 ARG USER="${USER}"
-ARG DOCKER_BASE="peta-2020.2"
-ARG DOCKER_BASE_TAG="peta2020.2-DEVEL"
+ARG DOCKER_BASE="peta-2020.1"
+ARG DOCKER_BASE_TAG="peta2020.1-20230501"
 
 ################################################################################
 ## base image
-FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2020.2
+FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2020.1
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -22,7 +22,7 @@ ARG XILINXMAIL="${XILINXMAIL}"
 ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2020.2"
+ENV XILINXVERSION="2020.1"
 
 ################################################################################
 ## container additionals

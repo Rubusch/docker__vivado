@@ -56,13 +56,13 @@ $ vi ./download/.env
 ```
 NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
 
-Example for Xilinx 2020.2:  
+Example for Xilinx 2020.1:  
 ```
 $ tree -a ./download/
     ./download/
     ├── .env
-    ├── petalinux-v2020.2-final-installer.run
-    └── Xilinx_Unified_2020.2_1118_1232_Lin64.bin
+    ├── petalinux-v2020.1-final-installer.run
+    └── Xilinx_Unified_2020.1_1118_1232_Lin64.bin
 
     0 directories, 3 files
 
@@ -85,7 +85,7 @@ $ ./setup.sh
 
 ```
 $ cd ./docker
-$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2020.2 /bin/bash
+$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2020.1 /bin/bash
 docker$  vivado &
     ...
 ```
