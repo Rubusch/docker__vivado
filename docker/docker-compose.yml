@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-    xilinx-2022.1:
-        container_name: xilinx-2022.1
-        image: ${USER}/xilinx-2022.1
+    peta-vivado-2022.1:
+        container_name: peta-vivado-2022.1
+        image: ${USER}/peta-vivado-2022.1
         build:
             context: build_context
             dockerfile: Dockerfile

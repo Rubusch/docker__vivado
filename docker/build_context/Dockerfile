@@ -11,7 +11,7 @@ ARG DOCKER_BASE_TAG="peta2022.1-20230301"
 
 ################################################################################
 ## base image
-FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS xilinx-2022.1
+FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2022.1
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
