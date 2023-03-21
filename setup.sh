@@ -52,25 +52,25 @@ if [ -z "${CONTAINER}" ]; then
 	## base not around, build
 	DO_BUILDBASE=1
 	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
-fi
-
-CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )" || true
-if [ -z "${CONTAINER}" ]; then
-	## container is not around, build
-	DO_BUILD=1
-	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 else
-	## container around, start
-	cd "${DOCKERDIR}"
-
-	if [ ! -f .env ]; then
-		echo "WARNING: no .env set, trying to obtain provided file"
-		link "${TOPDIR}/${DOWNLOADDIR}"/.env .
+	CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )" || true
+	if [ -z "${CONTAINER}" ]; then
+		## container is not around, build
+		DO_BUILD=1
+		test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
+	else
+		## container around, start
+		cd "${DOCKERDIR}"
+	
+		if [ ! -f .env ]; then
+			echo "WARNING: no .env set, trying to obtain provided file"
+			link "${TOPDIR}/${DOWNLOADDIR}"/.env .
+		fi
+		docker-compose -f ./docker-compose.yml run --rm "${IMAGE}" /bin/bash
+	
+		## exit success
+		exit 0
 	fi
-	docker-compose -f ./docker-compose.yml run --rm "${IMAGE}" /bin/bash
-
-	## exit success
-	exit 0
 fi
 
 ## build (slow)
