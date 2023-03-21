@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-    xilinx-2020.2:
-        container_name: xilinx-2020.2
-        image: ${USER}/xilinx-2020.2
+    peta-vivado-2020.2:
+        container_name: peta-vivado-2020.2
+        image: ${USER}/peta-vivado-2020.2
         build:
             context: build_context
             dockerfile: Dockerfile

@@ -85,7 +85,7 @@ $ ./setup.sh
 
 ```
 $ cd ./docker
-$ docker-compose -f ./docker-compose.yml run --rm xilinx-2020.2 /bin/bash
+$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2020.2 /bin/bash
 docker$  vivado &
 ...
 ```
