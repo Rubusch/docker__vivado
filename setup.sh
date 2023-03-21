@@ -36,6 +36,10 @@ link()
 	cd -
 }
 
+if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
+	die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
+fi
+
 TOPDIR="$(pwd)"
 test -z "${DOCKERDIR}" && DOCKERDIR="docker"
 test -z "${DOWNLOADDIR}" && DOWNLOADDIR="download"
