@@ -28,13 +28,18 @@ build()
 
 link()
 {
-	src="${1}"
-	dst="${2}"
+	src="${1}" ## source to link
+	dst="${2}" ## target directory, where to place the link
 	test -f "${src}" || die "file '${src}' is missing or not accessable"
+	test -L "${dst}/$( basename ${src} )" && return || true
 	cd "${dst}"
 	ln -s "${src}" .
 	cd -
 }
+
+if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
+	die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
+fi
 
 TOPDIR="$(pwd)"
 test -z "${DOCKERDIR}" && DOCKERDIR="docker"
@@ -96,8 +101,6 @@ if [ -n "${DO_BUILD}" ]; then
 	mv ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context"
 	build "${DOCKERDIR}" "${DRYRUN}"
 	cd "${TOPDIR}/${DOCKERDIR}"
-	echo "!!! Docker finished, overwrite ${DOCKERDIR}/.env file with default user, in case adjust manually !!!"
-	do_env
 fi
 
 echo "READY."
