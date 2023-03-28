@@ -10,6 +10,7 @@ die()
 
 do_env()
 {
+	test -f .env && return || true
 	echo "UID=$(id -u)" > .env
 	echo "GID=$(id -g)" >> .env
 }
@@ -37,8 +38,11 @@ link()
 	cd -
 }
 
-if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
-	die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
+if [ -d ".git" ]; then
+	## if this is a git repo, check if we're on branch "main", then abort
+	if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
+		die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
+	fi
 fi
 
 TOPDIR="$(pwd)"
@@ -65,14 +69,8 @@ else
 	else
 		## container around, start
 		cd "${DOCKERDIR}"
-	
-		if [ ! -f .env ]; then
-			echo "WARNING: no .env set, trying to obtain provided file"
-			link "${TOPDIR}/${DOWNLOADDIR}"/.env .
-		fi
+		do_env
 		docker-compose -f ./docker-compose.yml run --rm "${IMAGE}" /bin/bash
-	
-		## exit success
 		exit 0
 	fi
 fi
