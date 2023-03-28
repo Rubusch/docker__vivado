@@ -10,7 +10,8 @@ die()
 
 do_env()
 {
-	test -f .env && return || true
+	test -e .env && return || true
+	rm -f .env  ## in case of broken symlink
 	echo "UID=$(id -u)" > .env
 	echo "GID=$(id -g)" >> .env
 }
