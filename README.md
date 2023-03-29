@@ -4,8 +4,9 @@
 
 Docker for Xilinx Vivado IDE. Staged build on external base container.  
 
-- [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
 - [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.2)
+- [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
+- [Petalinux-Vivado-2022.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.2)
 
 **!!! Check out a tagged version in order to build!!!**
 
@@ -89,6 +90,7 @@ $ cat ./download/.env
     XILINXMAIL=my.email@company.com
     XILINXLOGIN='password123'
 ```
+After builting the container image, the folder `download` can be removed again. The installer files will be in the respective `build_context` folders and can be equally removed.
 
 ## Build and Usage
 
