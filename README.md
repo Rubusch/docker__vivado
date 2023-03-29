@@ -90,6 +90,7 @@ $ cat ./download/.env
     XILINXMAIL=my.email@company.com
     XILINXLOGIN='password123'
 ```
+After builting the container image, the folder `download` can be removed again. The installer files will be in the respective `build_context` folders and can be equally removed.
 
 ## Build and Usage
 
