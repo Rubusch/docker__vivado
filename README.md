@@ -102,7 +102,7 @@ $ ./setup.sh
 
 ```
 $ cd ./docker
-$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2020.2 /bin/bash
+$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2022.2 /bin/bash
 docker$  vivado &
 ...
 ```

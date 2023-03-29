@@ -6,12 +6,12 @@
 ################################################################################
 ## base image settings
 ARG USER="${USER}"
-ARG DOCKER_BASE="peta-2020.2"
-ARG DOCKER_BASE_TAG="peta2020.2-DEVEL"
+ARG DOCKER_BASE="peta-2022.2"
+ARG DOCKER_BASE_TAG="peta2022.2-20230401"
 
 ################################################################################
 ## base image
-FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2020.2
+FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2022.2
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -23,7 +23,7 @@ ARG XILINXMAIL="${XILINXMAIL}"
 ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2020.2"
+ENV XILINXVERSION="2022.2"
 
 
 ################################################################################
@@ -60,7 +60,7 @@ RUN ./10_*.exp
 #RUN cd /home/$USER/.Xilinx/ && patch -p1 -i $SCRIPTS/install-config.patch
 
 RUN ./20_*.exp "$XILINXMAIL" "$XILINXLOGIN"
-RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --batch Install --config /home/$USER/.Xilinx/install_config.txt
+RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
 ## install libs
 WORKDIR /tools/Xilinx/Vitis/$XILINXVERSION/scripts
