@@ -41,14 +41,14 @@ Prepare build by providing files..
 !!! **Prepare Xilinx login credentials, append the following variables** !!!  
 
 
-### 1. Provide Xinlinx Vivado Installer
+#### 1. Provide Xinlinx Vivado Installer
 
 ```
 $ mkdir ./download
 $ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
 ```
 
-### 2. Provide Petalinux Installer
+#### 2. Provide Petalinux Installer
 
 Only if no corresponding petalinux container is still around.  
 
@@ -56,7 +56,7 @@ Only if no corresponding petalinux container is still around.
 $ cp <Downloads>/petalinux-*-installer.run ./download
 ```
 
-### 3. Provide Credentials
+#### 3. Provide Credentials
 
 Only when installing Vivado, not needed for usage.  
 
@@ -73,6 +73,22 @@ inside the container, or after the container was built. The entries can be
 removed from the .env file again, if not overwritten during installation!
 The .env is not tracked by git.  
 
+Example for Xilinx 2020.2:  
+```
+$ tree -a ./download/
+    ./download/
+    ├── .env
+    ├── petalinux-v2020.2-final-installer.run
+    └── Xilinx_Unified_2020.2_1118_1232_Lin64.bin
+
+    0 directories, 3 files
+
+$ cat ./download/.env
+    UID=105601750
+    GID=105600513
+    XILINXMAIL=my.email@company.com
+    XILINXLOGIN='password123'
+```
 
 ## Build and Usage
 
