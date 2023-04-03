@@ -15,7 +15,6 @@ FROM ${USER}/${DOCKER_BASE}:${DOCKER_BASE_TAG} AS peta-vivado-2020.2
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
-
 ################################################################################
 ## environment (applied ARG/ENV must come after FROM declaration)
 ARG USER="${USER}"
@@ -25,12 +24,16 @@ ARG DISPLAY="${DISPLAY}"
 ENV SCRIPTS="/home/$USER/scripts"
 ENV XILINXVERSION="2020.2"
 
-
 ################################################################################
 ## container additionals
+## - the interactive installer script is based on expect
+## - vitis, e.g. the create system project dialog still needs something to show
+##   up, installing xfce4 will fix by its dependencies
 USER root
-RUN apt-get install -y expect
-
+RUN apt-get update && apt-get autoremove -y --purge
+RUN apt-get install -y \
+	expect \
+	xfce4
 
 ################################################################################
 ## prepare Xilinx installation
@@ -47,7 +50,6 @@ COPY *.zip $SCRIPTS/
 RUN chown ${USER}:${USER} -R $SCRIPTS
 RUN chmod a+x $SCRIPTS/*.exp
 RUN chmod a+x $SCRIPTS/*.bin
-
 
 ################################################################################
 ## installation
@@ -82,7 +84,6 @@ RUN export LD_LIBRARY_PATH=/tools/Xilinx/Vivado/2020.2/tps/lnx64/python-3.8.3/li
 ## cleanup
 USER root
 RUN rm -rf $SCRIPTS
-
 
 ################################################################################
 ## command mode
