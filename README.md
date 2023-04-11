@@ -30,38 +30,22 @@ $ sudo usermod -aG docker $USER
 ```
 
 Make sure to have:  
-  - ``Xilinx_Unified_*_Lin64.bin`` downloaded
-  - ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
+  - A downloaded ``Xilinx_Unified_*_Lin64.bin``
+  - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
 
-## Prepare
-
-Prepare build by providing files..  
+## Preparation
 
 !!! **Prepare Xilinx login credentials, append the following variables** !!!  
 
 
-#### 1. Provide Xinlinx Vivado Installer
+Provide Xilinx Vivado installer, Petalinux installer and credentials. Download the installer from the official page.  
 
 ```
 $ mkdir ./download
 $ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
-```
-
-#### 2. Provide Petalinux Installer
-
-Only if no corresponding petalinux container is still around.  
-
-```
 $ cp <Downloads>/petalinux-*-installer.run ./download
-```
-
-#### 3. Provide Credentials
-
-Only when installing Vivado, not needed for usage.  
-
-```
 $ echo "UID=$(id -u)" > ./download/.env
 $ echo "GID=$(id -g)" >> ./download/.env
 $ vi ./download/.env
@@ -69,10 +53,7 @@ $ vi ./download/.env
     XILINXMAIL='<my email>'
     XILINXLOGIN='<my xilinx password>'
 ```
-NB: Credentials are only needed for container creation. They are not stored
-inside the container, or after the container was built. The entries can be
-removed from the .env file again, if not overwritten during installation!
-The .env is not tracked by git.  
+NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
 
 Example for Xilinx 2020.2:  
 ```
@@ -90,7 +71,7 @@ $ cat ./download/.env
     XILINXMAIL=my.email@company.com
     XILINXLOGIN='password123'
 ```
-After builting the container image, the folder `download` can be removed again. The installer files will be in the respective `build_context` folders and can be equally removed.
+After building the image, the folder `download` can be removed. The installer files will be in the respective `build_context` folders and can be equally removed.
 
 ## Build and Usage
 
@@ -105,5 +86,5 @@ $ ./setup.sh
 $ cd ./docker
 $ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2022.2 /bin/bash
 docker$  vivado &
-...
+    ...
 ```
