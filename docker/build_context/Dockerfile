@@ -64,11 +64,26 @@ RUN ./10_*.exp
 RUN ./20_*.exp "$XILINXMAIL" "$XILINXLOGIN"
 RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
-## install libs
-WORKDIR /tools/Xilinx/Vitis/$XILINXVERSION/scripts
-RUN sudo ./installLibs.sh
+## install libs (pre-2020.2 does not have installLibs.sh script)
+## ref: "installing the vitis software" UG1400
+USER root
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository --yes ppa:xorg-edgers/ppa
+RUN apt-get update
+RUN apt-get install -y libgl1-mesa-glx
+RUN apt-get install -y libgl1-mesa-dri
+RUN apt-get install -y libgl1-mesa-dev
+RUN add-apt-repository --yes --remove ppa:xorg-edgers/ppa
+RUN apt-get install -y net-tools
+RUN apt-get install -y unzip
+RUN apt-get install -y gcc
+RUN apt-get install -y g++
+RUN apt-get install -y python
+## not needed, ubuntu 18.04 aliases python 2.7 to "python"
+#ln -s /usr/bin/python2 /usr/bin/python
 
 ## install JTAG driver
+USER $USER
 WORKDIR /tools/Xilinx/Vivado/$XILINXVERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
 
