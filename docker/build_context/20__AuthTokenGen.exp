@@ -48,10 +48,10 @@ set timeout -1
 ## generate access token
 spawn /usr/local/xsetup -b AuthTokenGen
 
-expect -re "E-mail Address:"
+expect "User ID:"
 send -- "$XILINXMAIL\r"
 
-expect -re "Password:"
+expect "Password:"
 send -- "$XILINXLOGIN\r"
 
 expect eof
