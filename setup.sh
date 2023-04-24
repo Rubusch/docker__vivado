@@ -21,7 +21,7 @@ build()
 	CONTAINER_NAME="$(grep "container_name:" -r "${1}/docker-compose.yml" | awk -F: '{ print $2 }' | tr -d ' ')"
 	cd "${1}"
 	if [ -n "${2}" ]; then
-		docker-compose build
+		docker-compose build --no-cache
 	else
 		docker-compose up --exit-code-from "${CONTAINER_NAME}"
 	fi
