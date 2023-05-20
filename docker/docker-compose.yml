@@ -25,6 +25,8 @@ services:
           - DISPLAY=$DISPLAY
         env_file:
           - .env
+        group_add:
+          - 20                   ## group: dialout
         volumes:
           ## folders not need to be around
           - /tmp/.X11-unix:/tmp/.X11-unix
