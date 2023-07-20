@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-    peta-vivado-2020.2:
-        container_name: peta-vivado-2020.2
-        image: ${USER}/peta-vivado-2020.2
+    peta-vivado-2023.1-nightly:
+        container_name: peta-vivado-2023.1-nightly
+        image: ${USER}/peta-vivado-2023.1-nightly
         build:
             context: build_context
             dockerfile: Dockerfile
