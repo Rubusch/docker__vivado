@@ -15,7 +15,7 @@ Docker for Xilinx Vivado IDE. Staged build on external base container.
 
 ## Requirements
 
-Tools needed  
+Tools needed for e.g. Ubuntu 18.04 (host)  
 
 ```
 $ sudo apt-get install -y libffi-dev libssl-dev
