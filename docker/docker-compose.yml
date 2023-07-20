@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-    peta-vivado-2023.1:
+    peta-vivado-2023.1
         container_name: peta-vivado-2023.1
         image: ${USER}/peta-vivado-2023.1
         build:
