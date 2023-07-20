@@ -322,7 +322,7 @@ RUN ./210_*.exp
 #RUN cd /home/$USER/.Xilinx/ && patch -p1 -i $SCRIPTS/200_install-config.patch
 
 RUN ./220_*.exp "$XILINXMAIL" "$XILINXLOGIN"
-RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
+RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
 ## install libs (pre-2020.2 does not have installLibs.sh script)
 ## ref: "installing the vitis software" UG1400
