@@ -8,13 +8,14 @@ Docker for Xilinx Vivado IDE. Staged build on external base container.
 - [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.2)
 - [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
 - [Petalinux-Vivado-2022.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.2)
+- [Petalinux-Vivado-2023.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2023.1)
 
 **!!! Check out a tagged version in order to build!!!**
 
 
 ## Requirements
 
-Tools needed  
+Tools needed for e.g. Ubuntu 18.04 (host)  
 
 ```
 $ sudo apt-get install -y libffi-dev libssl-dev
@@ -56,13 +57,13 @@ $ vi ./download/.env
 ```
 NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
 
-Example for Xilinx 2020.2:  
+Example:  
 ```
 $ tree -a ./download/
     ./download/
     ├── .env
-    ├── petalinux-v2020.2-final-installer.run
-    └── Xilinx_Unified_2020.2_1118_1232_Lin64.bin
+    ├── petalinux-v2020.2-*-installer.run
+    └── Xilinx_Unified_2020.2_*_Lin64.bin
 
     0 directories, 3 files
 
