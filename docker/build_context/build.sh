@@ -3,8 +3,8 @@ MY_USER="$(whoami)"
 MY_HOME="$(pwd)"
 WORKSPACE="${MY_HOME}/workspace"
 
-00_devenv.sh "${WORKSPACE}"
-10_prepare-petalinux.sh "${WORKSPACE}"
+000__devenv.sh "${WORKSPACE}"
+110__prepare-petalinux.sh "${WORKSPACE}"
 
 echo "READY."
 echo
