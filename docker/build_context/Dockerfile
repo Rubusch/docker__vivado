@@ -101,8 +101,7 @@ RUN apt-get install -y \
 	exuberant-ctags \
 	graphviz \
 	doxygen \
-	git-all \
-	file
+	git-all
 
 ################################################################################
 ## system settings
@@ -238,11 +237,7 @@ RUN apt-get install -y \
 	dpkg-dev:i386 \
 	ocl-icd-libopencl1 \
 	opencl-headers \
-	ocl-icd-opencl-dev \
-	python3-subunit \
-	mesa-common-dev \
-	liblz4-tool \
-	lz4
+	ocl-icd-opencl-dev
 
 ## GUI IDEs may require the following...
 RUN apt-get install -y \
