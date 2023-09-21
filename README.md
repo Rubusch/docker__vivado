@@ -2,7 +2,7 @@
 
 # Container for Xilinx Vivado
 
-Docker for Xilinx Vivado IDE. Staged build on external base container.  
+Docker for Xilinx Vivado IDE. A monolythic build image not based on external base container.  
 
 - [Petalinux-Vivado-2020.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.1)
 - [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.2)
