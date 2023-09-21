@@ -20,7 +20,7 @@ Tools needed for e.g. Ubuntu 18.04 (host)
 ```
 $ sudo apt-get install -y libffi-dev libssl-dev
 $ sudo apt-get install -y python3-dev
-$ sudo apt-get install -y python3-pyqt5 python3-pyqt5.qtwebengine python3-pypathlib
+$ sudo apt-get install -y python3-pyqt5 python3-pyqt5.qtwebengine
 $ sudo apt-get install -y python3 python3-pip
 $ pip3 install docker-compose
 ```
