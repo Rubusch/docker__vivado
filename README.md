@@ -15,8 +15,13 @@ Docker for Xilinx Vivado IDE. Staged build on external base container.
 
 ## Requirements
 
-Tools needed for e.g. Ubuntu 18.04 (host)  
+Install `docker-compose`
+```
+$ sudo apt update
+$ sudo apt install -y docker-compose
+```
 
+(opt) On older systems e.g. Ubuntu 18.04 (host) install  
 ```
 $ sudo apt-get install -y libffi-dev libssl-dev
 $ sudo apt-get install -y python3-dev
@@ -36,7 +41,6 @@ Make sure to have:
   - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
-
 ## Preparation
 
 !!! **Prepare Xilinx login credentials, append the following variables** !!!  
@@ -55,7 +59,7 @@ $ vi ./download/.env
     XILINXMAIL='<my email>'
     XILINXLOGIN='<my xilinx password>'
 ```
-NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
+NB: `XILINXMAIL` and `XILINXLOGIN` are only needed for container creation. They are not stored inside the container. The entries can be removed from the `.env` file after installation! The `.env` is not tracked by git.  
 
 Example:  
 ```
@@ -73,7 +77,7 @@ $ cat ./download/.env
     XILINXMAIL=my.email@company.com
     XILINXLOGIN='password123'
 ```
-After building the image, the folder `download` can be removed. The installer files will be in the respective `build_context` folders and can be equally removed.
+After building the image, the folder `download` can be removed. The installer files will be in the respective `build_context` folders and can be equally removed.  
 
 ## Build and Usage
 
