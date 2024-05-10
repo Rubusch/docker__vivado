@@ -309,6 +309,7 @@ RUN mkdir -p /tools
 RUN sudo chown ${USER}:${USER} -R /tools
 
 RUN mkdir $SCRIPTS
+#RUN --mount=type=bind,source=build_context/,target=$SCRIPTS
 COPY *.bin $SCRIPTS/
 COPY *.exp $SCRIPTS/
 COPY *.patch $SCRIPTS/
@@ -327,7 +328,6 @@ RUN ./210_*.exp
 
 ## adjust install config via install-config.patch
 #RUN cd /home/$USER/.Xilinx/ && patch -p1 -i $SCRIPTS/200_install-config.patch
-
 RUN ./220_*.exp "$XILINXMAIL" "$XILINXLOGIN"
 RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
 

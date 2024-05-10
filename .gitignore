@@ -3,6 +3,7 @@
 *#
 *.orig
 *.swp
+*.run
 
 ## installer
 *.bin
