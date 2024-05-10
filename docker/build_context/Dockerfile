@@ -309,6 +309,7 @@ RUN mkdir -p /tools
 RUN sudo chown ${USER}:${USER} -R /tools
 
 RUN mkdir $SCRIPTS
+#RUN --mount=type=bind,source=build_context/,target=$SCRIPTS
 COPY *.bin $SCRIPTS/
 COPY *.exp $SCRIPTS/
 COPY *.patch $SCRIPTS/
