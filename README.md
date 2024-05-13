@@ -9,6 +9,8 @@ Docker for Xilinx Vivado IDE. A monolythic build image not based on external bas
 - [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
 - [Petalinux-Vivado-2022.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.2)
 - [Petalinux-Vivado-2023.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2023.1)
+- [Petalinux-Vivado-2023.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2023.2)
+- [Petalinux-Vivado-2024.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2024.1)
 
 **!!! Check out a tagged version in order to build!!!**
 
@@ -48,8 +50,8 @@ Example:
 $ tree -a ./download/
     ./download/
     ├── .env
-    ├── petalinux-v2023.1-*-installer.run
-    └── Xilinx_Unified_2023.1_*_Lin64.bin
+    ├── petalinux-v20*-installer.run
+    └── FPGAs_AdaptiveSoCs_Unified_20*_Lin64.bin
 
     0 directories, 3 files
 
