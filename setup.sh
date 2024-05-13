@@ -66,10 +66,10 @@ fi
 if [ -n "${DO_BUILD}" ]; then
 	DATE="$(date +%Y%m%d%H%M)"
 	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
-	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
+	test -f ${TOPDIR}/${DOWNLOADDIR}/FPGAs_AdaptiveSoCs_Unified_${VERSION}_*_Lin64.bin || die "No FPGAs_AdaptiveSoCs_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 
 	mv ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run "${TOPDIR}/${DOCKERDIR}/build_context/"
-	mv ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
+	mv ${TOPDIR}/${DOWNLOADDIR}/FPGAs_AdaptiveSoCs_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
 
         cd "$DOCKERDIR"
 	docker build \
