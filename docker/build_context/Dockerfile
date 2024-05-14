@@ -1,5 +1,5 @@
 ################################################################################
-FROM ubuntu:22.04 AS peta-vivado-2023.1-nightly
+FROM ubuntu:22.04 AS peta-vivado-2023.2-nightly
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,7 +13,7 @@ ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV MY_CONFIGS="/home/$USER/configs"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2023.1"
+ENV XILINXVERSION="2023.2"
 
 ################################################################################
 ## set up apt fully functional
@@ -259,38 +259,6 @@ RUN apt-get install -y \
 	expect \
 	zstd
 
-################################################################################
-## prepare installation
-USER root
-RUN mkdir /tools
-RUN sudo chown ${USER}:${USER} -R /tools
-
-RUN mkdir /home/$USER/scripts
-COPY *.run /home/$USER/scripts/
-COPY *.exp /home/$USER/scripts/
-
-RUN sudo chown ${USER}:${USER} -R /home/$USER/scripts
-
-################################################################################
-## installation
-USER $USER
-RUN mkdir /home/$USER/workspace
-
-WORKDIR /home/$USER/workspace
-RUN /home/$USER/scripts/100__install-*.exp ../scripts/petalinux-*-installer.run
-
-## cleanup
-USER root
-RUN mv /home/$USER/workspace /home/$USER/workspace.template
-RUN rm -rf /home/$USER/scripts
-
-## link config environment
-RUN rm -f /home/$USER/.petalinux-sys.env && ln -s ${MY_CONFIGS}/.petalinux-sys.env /home/$USER/
-
-## fix missing "python" link
-USER root
-RUN test -e /usr/bin/python || ln -s /usr/bin/python3 /usr/bin/python
-
 ## VIVADO ######################################################################
 ## container additionals
 ## - the interactive installer script is based on expect
@@ -303,13 +271,15 @@ RUN apt-get install -y \
 	xfce4
 
 ################################################################################
-## prepare Xilinx installation
+## prepare installation
 USER root
-RUN mkdir -p /tools
+RUN mkdir /tools
 RUN sudo chown ${USER}:${USER} -R /tools
 
 RUN mkdir $SCRIPTS
 #RUN --mount=type=bind,source=build_context/,target=$SCRIPTS
+
+COPY *.run $SCRIPTS/
 COPY *.bin $SCRIPTS/
 COPY *.exp $SCRIPTS/
 COPY *.patch $SCRIPTS/
@@ -317,13 +287,22 @@ COPY *.patch $SCRIPTS/
 RUN chown ${USER}:${USER} -R $SCRIPTS
 RUN chmod a+x $SCRIPTS/*.exp
 RUN chmod a+x $SCRIPTS/*.bin
+RUN chmod a+x $SCRIPTS/*.run
 
 ################################################################################
-## installation
+## petalinux installation
+USER $USER
+RUN mkdir /home/$USER/workspace
+
+WORKDIR /home/$USER/workspace
+RUN $SCRIPTS/100__install-*.exp ../scripts/petalinux-*-installer.run
+
+################################################################################
+## vivado installation
 USER $USER
 
 WORKDIR $SCRIPTS
-RUN ./Xilinx_*.bin --keep --noexec --target /usr/local/
+RUN ./FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin --keep --noexec --target /usr/local/
 RUN ./210_*.exp
 
 ## adjust install config via install-config.patch
@@ -342,7 +321,15 @@ RUN sudo ./install_drivers
 
 ## cleanup
 USER root
+RUN mv /home/$USER/workspace /home/$USER/workspace.template
 RUN rm -rf $SCRIPTS
+
+## link config environment
+RUN rm -f /home/$USER/.petalinux-sys.env && ln -s ${MY_CONFIGS}/.petalinux-sys.env /home/$USER/
+
+## fix missing "python" link
+USER root
+RUN test -e /usr/bin/python || ln -s /usr/bin/python3 /usr/bin/python
 
 ################################################################################
 ## command mode
