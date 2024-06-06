@@ -31,6 +31,7 @@ RUN apt-get install -y \
 	bc \
 	libelf-dev \
 	python3-all \
+	python3-venv \
 	python3-dialog \
 	rsync \
 	binutils \
