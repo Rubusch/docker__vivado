@@ -60,7 +60,6 @@ RUN apt-get install -y \
 	net-tools \
 	iproute2 \
 	socat \
-	tftpd \
 	iputils-ping \
 	openssl \
 	libssl-dev \
@@ -135,29 +134,6 @@ RUN chown -R "${USER}":"${USER}" /opt
 
 RUN adduser "$USER" sudo
 RUN adduser "$USER" dialout
-
-################################################################################
-## tftp server
-USER root
-RUN echo -e '\
-service tftp\n\
-    {\n\
-    protocol = udp\n\
-    port = 69\n\
-    socket_type = dgram\n\
-    wait = yes\n\
-    user = nobody\n\
-    server = /usr/sbin/in.tftpd\n\
-    server_args = /tftpboot\n\
-    disable = no\n\
-    }\n\
-' > /etc/xinetd.d/tftp
-
-RUN mkdir /tftpboot
-RUN chmod -R 777 /tftpboot
-RUN chown -R nobody /tftpboot
-RUN /etc/init.d/xinetd stop tftp
-RUN /etc/init.d/xinetd start tftp
 
 ################################################################################
 ## configs
