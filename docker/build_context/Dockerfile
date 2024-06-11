@@ -1,5 +1,5 @@
 ################################################################################
-FROM ubuntu:22.04 AS peta-vivado-2023.2-nightly
+FROM ubuntu:22.04 AS peta-vivado-NIGHTLY
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
