@@ -65,6 +65,13 @@ fi
 
 if [ -n "${DO_BUILD}" ]; then
 	DATE="$(date +%Y%m%d%H%M)"
+	if [ -z "${XILINXMAIL}" ]; then
+		die "env variable XILINXMAIL is not set"
+	fi
+	if [ -z "${XILINXLOGIN}" ]; then
+		die "env variable XILINXLOGIN is not set"
+	fi
+
 	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
 	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 
