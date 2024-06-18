@@ -57,22 +57,17 @@ send -- "q"
 expect -re ".* > "
 send -- "y\r"
 
-## WebTalk Terms and Conditions
-send -- "q\r"
-expect -re ".* > "
-send -- "y\r"
-
 ## Third Party License Agreement
 send -- "q\r"
 expect -re ".* > "
-send -- "y\r"
+send -- "y\r\r"
 
-## install?
-expect -re ".*Please input \"y\" to proceed the installation, \"n\" to exit otherwise:"
+## proceed the installation?
+expect -re ".*"
 send -- "y\r"
 
 ## really sure to installation?
-expect -re ".*Please input \"y\" to continue to install PetaLinux in that directory?.*"
+expect -re ".*"
 send -- "y\r"
 
 expect eof
