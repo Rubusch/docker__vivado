@@ -172,7 +172,6 @@ RUN apt-get install -y \
 	libc6-i386 \
 	bsdmainutils \
 	google-perftools \
-	libegl1-mesa \
 	libsdl1.2-dev \
 	pylint \
 	python3 \
