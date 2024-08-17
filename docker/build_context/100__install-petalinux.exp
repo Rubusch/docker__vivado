@@ -51,23 +51,22 @@ match_max 100000
 ## preamble
 expect -re ".*Press Enter to display the license agreements.*"
 send -- "\r"
-send -- "q"
+send -- "q\r"
 
 ## Xilinx End User License Agreement
 expect -re ".* > "
 send -- "y\r"
 
 ## Third Party License Agreement
-send -- "q\r"
+send -- "q"
 expect -re ".* > "
 send -- "y\r\r"
 
-## proceed the installation?
-expect -re ".*"
-send -- "y\r"
+## install?
+expect -re ".*Enter target directory for SDK.*: "
+send -- "\r"
 
-## really sure to installation?
-expect -re ".*"
+## location "workspace" already exists, contains data - overwrite? really?
 send -- "y\r"
 
 expect eof
