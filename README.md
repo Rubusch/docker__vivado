@@ -20,7 +20,7 @@ Docker for Xilinx Vivado IDE. A monolythic build image not based on external bas
 Have `docker` installed.  
 
 Make sure to have:  
-  - A downloaded ``Xilinx_Unified_*_Lin64.bin``
+  - A downloaded ``FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin``
   - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
@@ -34,28 +34,28 @@ Provide Xilinx Vivado installer, Petalinux installer and credentials. Download t
 
 ```
 $ mkdir ./download
-$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
+$ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
 $ cp <Downloads>/petalinux-*-installer.run ./download
-$ echo "export UID=$(id -u)" > ./download/.env
-$ echo "export GID=$(id -g)" >> ./download/.env
-$ vi ./download/.env
+$ echo "export UID=$(id -u)" > ./download/env
+$ echo "export GID=$(id -g)" >> ./download/env
+$ vi ./download/env
     ...
     export XILINXMAIL='<my email>'
     export XILINXLOGIN='<my xilinx password>'
 ```
-NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
+NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the env file after installation! The env is not tracked by git.  
 
 Example:  
 ```
 $ tree -a ./download/
     ./download/
-    ├── .env
+    ├── env
     ├── petalinux-v20*-installer.run
     └── FPGAs_AdaptiveSoCs_Unified_20*_Lin64.bin
 
     0 directories, 3 files
 
-$ cat ./download/.env
+$ cat ./download/env
     export UID=105601750
     export GID=105600513
     export XILINXMAIL=my.email@company.com
@@ -66,7 +66,7 @@ After building the image, the folder `download` can be removed. The installer fi
 ## Build
 
 ```
-$ source ./download/.env
+$ source ./download/env
 $ ./setup.sh
 ```
 First usage will end, w/o giving a prompt. It should display a message, though.  
