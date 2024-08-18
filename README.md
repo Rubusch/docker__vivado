@@ -48,8 +48,8 @@ Example:
 $ tree -a ./download/
     ./download/
     ├── env
-    ├── petalinux-v2023.1-*-installer.run
-    └── Xilinx_Unified_2023.1_*_Lin64.bin
+    ├── petalinux-*-installer.run
+    └── Xilinx_Unified_*_Lin64.bin
 
     0 directories, 3 files
 
