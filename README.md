@@ -18,7 +18,7 @@ Docker for Xilinx Vivado IDE. A monolythic build image not based on external bas
 Have `docker` installed.  
 
 Make sure to have:  
-  - A downloaded ``FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin``
+  - A downloaded ``Xilinx_Unified_*_Lin64.bin``
   - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
@@ -32,7 +32,7 @@ Provide Xilinx Vivado installer, Petalinux installer and credentials. Download t
 
 ```
 $ mkdir ./download
-$ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
+$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
 $ cp <Downloads>/petalinux-*-installer.run ./download
 $ echo "export UID=$(id -u)" > ./download/env
 $ echo "export GID=$(id -g)" >> ./download/env
@@ -48,8 +48,8 @@ Example:
 $ tree -a ./download/
     ./download/
     ├── env
-    ├── petalinux-v20*-installer.run
-    └── FPGAs_AdaptiveSoCs_Unified_20*_Lin64.bin
+    ├── petalinux-v2023.1-*-installer.run
+    └── Xilinx_Unified_2023.1_*_Lin64.bin
 
     0 directories, 3 files
 
