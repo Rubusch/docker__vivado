@@ -1,5 +1,5 @@
 ################################################################################
-FROM ubuntu:22.04 AS peta-vivado-NIGHTLY
+FROM ubuntu:22.04 AS peta-vivado-2023.1
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,7 +13,7 @@ ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV MY_CONFIGS="/home/$USER/configs"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2023.2"
+ENV XILINXVERSION="2023.1"
 
 ################################################################################
 ## set up apt fully functional
@@ -279,7 +279,7 @@ RUN $SCRIPTS/100__install-*.exp ../scripts/petalinux-*-installer.run
 USER $USER
 
 WORKDIR $SCRIPTS
-RUN ./FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin --keep --noexec --target /usr/local/
+RUN ./Xilinx_Unified_*_Lin64.bin --keep --noexec --target /usr/local/
 RUN ./210_*.exp
 
 ## adjust install config via install-config.patch
