@@ -123,7 +123,7 @@ ENV LC_ALL en_US.UTF-8
 ## user settings
 USER root
 RUN groupadd -g "$GID" "$USER"
-RUN useradd -l -m -u "$UID" -g "$GID" -s /bin/bash "$USER"
+RUN useradd -m -u "$UID" -g "$GID" -s /bin/bash "$USER"
 
 RUN echo "$USER  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -270,9 +270,10 @@ RUN chmod a+x $SCRIPTS/*.run
 ## petalinux installation
 USER $USER
 RUN mkdir /home/$USER/workspace
+RUN sudo chown $USER:$USER -R /home/$USER/workspace
 
 WORKDIR /home/$USER/workspace
-RUN $SCRIPTS/100__install-*.exp ../scripts/petalinux-*-installer.run
+RUN $SCRIPTS/100__install-*.exp $SCRIPTS/petalinux-*-installer.run
 
 ################################################################################
 ## vivado installation
@@ -281,10 +282,6 @@ USER $USER
 WORKDIR $SCRIPTS
 RUN ./FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin --keep --noexec --target /usr/local/
 RUN ./210_*.exp
-
-## adjust install config via install-config.patch
-#RUN cd /home/$USER/.Xilinx/ && patch -p1 -i $SCRIPTS/200_install-config.patch
-
 RUN ./220_*.exp "$XILINXMAIL" "$XILINXLOGIN"
 RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
@@ -296,12 +293,15 @@ RUN sudo ./installLibs.sh
 WORKDIR /tools/Xilinx/Vivado/$XILINXVERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
 
-## cleanup
+################################################################################
+## finalize
+
+## provide workspace template
 USER root
 RUN mv /home/$USER/workspace /home/$USER/workspace.template
-RUN rm -rf $SCRIPTS
 
-## link config environment
+## cleanup
+RUN rm -rf $SCRIPTS
 RUN rm -f /home/$USER/.petalinux-sys.env && ln -s ${MY_CONFIGS}/.petalinux-sys.env /home/$USER/
 
 ## fix missing "python" link
