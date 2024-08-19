@@ -123,7 +123,7 @@ ENV LC_ALL en_US.UTF-8
 ## user settings
 USER root
 RUN groupadd -g "$GID" "$USER"
-RUN useradd -l -m -u "$UID" -g "$GID" -s /bin/bash "$USER"
+RUN useradd -m -u "$UID" -g "$GID" -s /bin/bash "$USER"
 
 RUN echo "$USER  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
