@@ -55,19 +55,19 @@ send -- "q"
 
 ## Xilinx End User License Agreement
 expect -re ".* > "
-send -- "y\r"
-
-## Third Party License Agreement
-send -- "q\r"
-expect -re ".* > "
 send -- "y\r\r"
 
-## proceed the installation?
-expect -re ".*"
+## Third Party License Agreement
+send -- "q"
+expect -re ".* > "
 send -- "y\r"
 
-## really sure to installation?
-expect -re ".*"
+## install?
+expect -re ".*Enter target directory for SDK.*: "
+send -- "\r"
+
+## location "workspace" already exists, contains data - overwrite? really?
+expect -re ".*Proceed \[y/N\]?.*"
 send -- "y\r"
 
 expect eof
