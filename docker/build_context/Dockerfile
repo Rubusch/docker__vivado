@@ -270,9 +270,10 @@ RUN chmod a+x $SCRIPTS/*.run
 ## petalinux installation
 USER $USER
 RUN mkdir /home/$USER/workspace
+RUN sudo chown $USER:$USER -R /home/$USER/workspace
 
 WORKDIR /home/$USER/workspace
-RUN $SCRIPTS/100__install-*.exp ../scripts/petalinux-*-installer.run
+RUN $SCRIPTS/100__install-*.exp $SCRIPTS/petalinux-*-installer.run
 
 ################################################################################
 ## vivado installation
