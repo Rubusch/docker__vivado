@@ -25,6 +25,7 @@ Have `docker` installed.
 Make sure to have:  
   - A downloaded ``FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin``
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
+  - Environment variables UID, GID, XILINXMAIL and XILINXLOGIN set in the environment
 
 
 ## Preparation
@@ -32,7 +33,7 @@ Make sure to have:
 !!! **Prepare Xilinx login credentials, append the following variables** !!!  
 
 
-Provide Xilinx Vivado installer and credentials. Download the installer from the official page.  
+Provide Xilinx Vivado installer and credentials, as UID and GID (note, if UID and GID is already set in your environment, skip the following). Download the installer from the official page.  
 
 ```
 $ mkdir ./download
@@ -59,13 +60,30 @@ $ ./setup.sh
 First usage will end, w/o giving a prompt. It should display a message, though.  
 ```
 $ ./setup.sh
-<prepares workspace folder>
+
+Preparing docker images - please re-run this script to enter the container image!
+setting up petalinux
+READY.
 ```
 
 ## Usage
 
 ```
 $ ./setup.sh
-docker$  vivado &
+*************************************************************************************************************************************************
+The PetaLinux source code and images provided/generated are for demonstration purposes only.
+Please refer to https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/2741928025/Moving+from+PetaLinux+to+Production+Deployment
+ for more details
+*************************************************************************************************************************************************
+PetaLinux environment set to '/home/lrub/workspace'
+[INFO] Checking free disk space
+[INFO] Checking installed tools
+[INFO] Checking installed development libraries
+[INFO] Checking network and other services
+setting environment
+PATH=/tools/Xilinx/Vitis_HLS/2024.2/bin:/tools/Xilinx/Model_Composer/2024.2/bin:/tools/Xilinx/Vitis/2024.2/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/lin/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/linux_toolchain/lin64_le/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-linux/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-none/bin:/tools/Xilinx/Vitis/2024.2/gnu/armr5/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/aietools/bin:/tools/Xilinx/Vitis/2024.2/gnu/riscv/lin/riscv64-unknown-elf/bin:/tools/Xilinx/Vivado/2024.2/bin:/tools/Xilinx/DocNav:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/usr/bin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/usr/sbin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/bin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/sbin:/home/lrub/workspace/scripts:/home/lrub/workspace/components/xsct/gnu/microblaze/lin/bin:/home/lrub/workspace/components/xsct/gnu/armr5/lin/gcc-arm-none-eabi/bin:/home/lrub/workspace/components/xsct/gnu/aarch64/lin/aarch64-linux/bin:/home/lrub/workspace/components/xsct/gnu/aarch64/lin/aarch64-none/bin:/home/lrub/workspace/components/xsct/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/home/lrub/workspace/components/xsct/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+xilinx<20:15:21>::lrub("~/");
+(docker) $  vivado &
     ...
 ```
