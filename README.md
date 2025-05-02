@@ -11,6 +11,9 @@ Docker for Xilinx Vivado IDE. A monolythic build image not based on external bas
 - [Petalinux-Vivado-2023.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2023.1)
 - [Petalinux-Vivado-2024.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2024.1)
 
+NB: Starting 2024.2: No pre-installed petalinux tooling anymore.
+- [Vivado-2024.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.2)
+
 
 **!!! Check out a tagged version in order to build!!!**
 
@@ -21,7 +24,6 @@ Have `docker` installed.
 
 Make sure to have:  
   - A downloaded ``FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin``
-  - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
   - A xilinx account is needed to install the packages (usually free), and to provide the credentials
 
 

@@ -13,7 +13,7 @@ ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV MY_CONFIGS="/home/$USER/configs"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2024.1"
+ENV XILINXVERSION="2024.2"
 
 ################################################################################
 ## set up apt fully functional
@@ -250,7 +250,6 @@ RUN sudo chown ${USER}:${USER} -R /tools
 RUN mkdir $SCRIPTS
 #RUN --mount=type=bind,source=build_context/,target=$SCRIPTS
 
-COPY *.run $SCRIPTS/
 COPY *.bin $SCRIPTS/
 COPY *.exp $SCRIPTS/
 COPY *.patch $SCRIPTS/
@@ -258,20 +257,13 @@ COPY *.patch $SCRIPTS/
 RUN chown ${USER}:${USER} -R $SCRIPTS
 RUN chmod a+x $SCRIPTS/*.exp
 RUN chmod a+x $SCRIPTS/*.bin
-RUN chmod a+x $SCRIPTS/*.run
-
-################################################################################
-## petalinux installation
-USER $USER
-RUN mkdir /home/$USER/workspace
-RUN sudo chown $USER:$USER -R /home/$USER/workspace
-
-WORKDIR /home/$USER/workspace
-RUN $SCRIPTS/100__install-*.exp $SCRIPTS/petalinux-*-installer.run
 
 ################################################################################
 ## vivado installation
 USER $USER
+
+RUN mkdir /home/$USER/workspace
+RUN sudo chown $USER:$USER -R /home/$USER/workspace
 
 WORKDIR $SCRIPTS
 RUN ./FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin --keep --noexec --target /usr/local/

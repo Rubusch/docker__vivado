@@ -6,11 +6,11 @@ WORKSPACE="${1}"
 FIRST="$(ls -A "${WORKSPACE}")" || true
 if [ -z "${FIRST}" ]; then
 	if [ -d "${WORKSPACE}.template" ]; then
-		echo "setting up petalinux"
+		echo "setting up workspace"
 		ln -sf "${WORKSPACE}.template/"{*,.[aA-zZ]*} "${WORKSPACE}"/
 	else
-		echo "setting up petalinux: failed, no '${WORKSPACE}.templte' found"
+		echo "setting up workspace: failed, no '${WORKSPACE}.templte' found"
 	fi
 else
-	echo "NOTE: the folder '${WORKSPACE}' was not empty, in case copy petalinux content manually from '${WORKSPACE}.template' to '${WORKSPACE}'"
+	echo "NOTE: the folder '${WORKSPACE}' was not empty, in case copy content manually from '${WORKSPACE}.template' to '${WORKSPACE}'"
 fi
