@@ -143,22 +143,15 @@ WORKDIR /home/${USER}
 RUN rm -rf .local
 RUN ln -s /usr/local .local
 
-## bash config
 RUN rm -f /home/$USER/.bashrc && ln -s ${MY_CONFIGS}/.bashrc /home/$USER/
-
-## vim config
 RUN rm -f /home/$USER/.vimrc && ln -s ${MY_CONFIGS}/.vimrc /home/$USER/
-
-## emacs config
 RUN rm -f /home/$USER/.emacs && ln -s ${MY_CONFIGS}/.emacs /home/$USER/
 
-## user
 RUN echo "export USER=${USER}" >> /home/$USER/.profile
 
-## ssh preparations
 RUN mkdir -p /home/$USER/.ssh
 
-## PETALINUX ##################################################################
+## #############################################################################
 ## container additionals
 USER root
 
