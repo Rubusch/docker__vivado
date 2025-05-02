@@ -233,6 +233,7 @@ RUN apt-get install -y \
 
 ## needed for setup
 RUN apt-get install -y \
+	bind9-utils \
 	expect \
 	zstd
 
