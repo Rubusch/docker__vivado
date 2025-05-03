@@ -2,7 +2,7 @@
 
 # Container for Xilinx Vivado
 
-Docker for Xilinx Vivado IDE. A monolythic build image not based on external base container.  
+Docker for Xilinx Vivado IDE development environment.  
 
 - [Petalinux-Vivado-2020.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2020.1)
 - [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2020.2)
@@ -57,12 +57,12 @@ $ export XILINXLOGIN='password123'
 $ source ./download/env
 $ ./setup.sh
 ```
-First usage will end, w/o giving a prompt. It should display a message, though.  
+Call setup.sh again now, if no workspace folder is setup, it will return without giving a prompt.
 ```
 $ ./setup.sh
 
 Preparing docker images - please re-run this script to enter the container image!
-setting up petalinux
+setting up workspace
 READY.
 ```
 
@@ -70,20 +70,33 @@ READY.
 
 ```
 $ ./setup.sh
-*************************************************************************************************************************************************
-The PetaLinux source code and images provided/generated are for demonstration purposes only.
-Please refer to https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/2741928025/Moving+from+PetaLinux+to+Production+Deployment
- for more details
-*************************************************************************************************************************************************
-PetaLinux environment set to '/home/lrub/workspace'
-[INFO] Checking free disk space
-[INFO] Checking installed tools
-[INFO] Checking installed development libraries
-[INFO] Checking network and other services
 setting environment
-PATH=/tools/Xilinx/Vitis_HLS/2024.2/bin:/tools/Xilinx/Model_Composer/2024.2/bin:/tools/Xilinx/Vitis/2024.2/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/lin/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/linux_toolchain/lin64_le/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-linux/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-none/bin:/tools/Xilinx/Vitis/2024.2/gnu/armr5/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/aietools/bin:/tools/Xilinx/Vitis/2024.2/gnu/riscv/lin/riscv64-unknown-elf/bin:/tools/Xilinx/Vivado/2024.2/bin:/tools/Xilinx/DocNav:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/usr/bin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/usr/sbin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/bin:/home/lrub/workspace/sysroots/x86_64-petalinux-linux/sbin:/home/lrub/workspace/scripts:/home/lrub/workspace/components/xsct/gnu/microblaze/lin/bin:/home/lrub/workspace/components/xsct/gnu/armr5/lin/gcc-arm-none-eabi/bin:/home/lrub/workspace/components/xsct/gnu/aarch64/lin/aarch64-linux/bin:/home/lrub/workspace/components/xsct/gnu/aarch64/lin/aarch64-none/bin:/home/lrub/workspace/components/xsct/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/home/lrub/workspace/components/xsct/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=/tools/Xilinx/Vitis_HLS/2024.2/bin:/tools/Xilinx/Model_Composer/2024.2/bin:/tools/Xilinx/Vitis/2024.2/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/lin/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/linux_toolchain/lin64_le/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-linux/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-none/bin:/tools/Xilinx/Vitis/2024.2/gnu/armr5/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/aietools/bin:/tools/Xilinx/Vitis/2024.2/gnu/riscv/lin/riscv64-unknown-elf/bin:/tools/Xilinx/Vivado/2024.2/bin:/tools/Xilinx/DocNav:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 xilinx<20:15:21>::lrub("~/");
-(docker) $  vivado &
+(docker)$ vivado &
     ...
+```
+end a container session  
+```
+(docker)$ exit
+$
+```
+A folder _workspace_ is mounted into the docker container. Content in the _workspace_ folder thus remains when exiting the container. What is in the container or installed during runtime is gone after exit.
+
+## Troubleshooting
+
+remove the container entirely
+```
+$ docker images
+REPOSITORY                TAG            IMAGE ID       CREATED             SIZE
+vivado-2024.2             202505031615   ca2385dc11ab   About an hour ago   174GB
+ubuntu                    22.04          c6b84b685f35   20 months ago       77.8MB
+
+$ docker rmi -f ca2385dc11ab
+Untagged: vivado-2024.2:202505031615
+Deleted: sha256:ca2385dc11ab1af2a4911ac13f0ce517edd2d720aecd815e6245a582c287e550
+
+$ docker system prune -f
+...
 ```
