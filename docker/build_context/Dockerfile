@@ -282,9 +282,7 @@ RUN sudo ./install_drivers
 ################################################################################
 ## finalize
 
-## provide workspace template
 USER root
-RUN mv /home/$USER/workspace /home/$USER/workspace.template
 
 ## cleanup
 RUN rm -rf $SCRIPTS
