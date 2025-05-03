@@ -107,7 +107,7 @@ export EN_SYS_ENV="/home/${USER}/.petalinux-sys.env"
 source "${EN_SYS_ENV}"
 
 ## xilinx environment
-source "/home/${USER}/workspace/settings.sh"
+test -f "/home/${USER}/workspace/settings.sh" && source "/home/${USER}/workspace/settings.sh"
 source "/tools/Xilinx/Vivado/2024.2/settings64.sh"
 
 echo "setting environment"
