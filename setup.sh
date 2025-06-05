@@ -34,9 +34,9 @@ if [ -z "${CONTAINER}" ]; then
 		die "pls, provide an env variable XILINXLOGIN (password for the xilinx login, under with the email '$XILINXLOGIN')"
 	fi
 
-	test -f ${TOPDIR}/${DOWNLOADDIR}/*_Unified_${VERSION}_*_Lin64.bin || die "No *_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
+	test -f ${TOPDIR}/${DOWNLOADDIR}/*_Unified_SDI_${VERSION}_*_Lin64.bin || die "No *_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 
-	mv ${TOPDIR}/${DOWNLOADDIR}/*_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
+	mv ${TOPDIR}/${DOWNLOADDIR}/*_Unified_SDI_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
 
 	cd "$DOCKERDIR"
 	docker build \
