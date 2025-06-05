@@ -1,5 +1,5 @@
 ################################################################################
-FROM ubuntu:22.04 AS peta-vivado-NIGHTLY
+FROM ubuntu:22.04 AS vivado-2025.1
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,7 +13,7 @@ ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV MY_CONFIGS="/home/$USER/configs"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2024.2"
+ENV XILINXVERSION="2025.1"
 
 ################################################################################
 ## set up apt fully functional
