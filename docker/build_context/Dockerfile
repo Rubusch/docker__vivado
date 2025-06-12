@@ -172,7 +172,7 @@ RUN apt-get install -y \
 	python3-git \
 	python3-jinja2 \
 	python3-pexpect \
-   	perl \
+	perl \
 	liberror-perl \
 	haveged \
 	lib32stdc++6 \
@@ -211,7 +211,8 @@ RUN apt-get install -y \
 	python3-subunit \
 	mesa-common-dev \
 	liblz4-tool \
-	lz4
+	lz4 \
+	repo
 
 ## GUI IDEs may require the following...
 RUN apt-get install -y \
