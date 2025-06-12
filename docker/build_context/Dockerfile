@@ -269,14 +269,16 @@ WORKDIR $SCRIPTS
 RUN ./FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin --keep --noexec --target /usr/local/
 RUN ./210_*.exp
 RUN ./220_*.exp "$XILINXMAIL" "$XILINXLOGIN"
+
+COPY install_config.txt /home/$USER/.Xilinx/install_config.txt
 RUN /usr/local/xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/$USER/.Xilinx/install_config.txt
 
 ## install libs
-WORKDIR /tools/Xilinx/Vitis/$XILINXVERSION/scripts
+WORKDIR /tools/Xilinx/$XILINXVERSION/Vitis/scripts
 RUN sudo ./installLibs.sh
 
 ## install JTAG driver
-WORKDIR /tools/Xilinx/Vivado/$XILINXVERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers
+WORKDIR /tools/Xilinx/2025.1/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
 
 ################################################################################

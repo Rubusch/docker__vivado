@@ -33,45 +33,50 @@ Make sure to have:
 !!! **Prepare Xilinx login credentials, append the following variables** !!!  
 
 
-Provide Xilinx Vivado installer and credentials, as UID and GID (note, if UID and GID is already set in your environment, skip the following). Download the installer from the official page.  
-
+Download the installer from the official page.  
 ```
 $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
-$ echo "export UID=$(id -u)" > ./download/env
-$ echo "export GID=$(id -g)" >> ./download/env
-$ vi ./download/env
-    export UID=105601750
-    export GID=105600513
 ```
 
-NB: `XILINXMAIL` and `XILINXLOGIN` are only needed for container creation. They are not stored inside the container. When added to the env file they can also be sourced with the ids for the environment.  
+Check if UID and GID are in your environment. If not, set them accordingly.
+```
+$ export UID=$(id -u)
+$ export GID=$(id -g)
+```
 
-After building the image, the folder `download` can be removed. The installer files will be in the respective `build_context` folders and can be equally removed.
+Provide Xilinx user credentials as env vars.
+```
+$ export XILINXMAIL=my.email@company.com
+$ export XILINXLOGIN='password123'
+```
+NB: `XILINXMAIL` and `XILINXLOGIN` are only needed for container creation. They are not stored inside the container.  
+
+Edit the `install_config.txt` or use it as is, this is the Xilinx install config.  
+
+After building the image, the folder `download` can be removed, the Xilinx installer .bin file can be found in `./docker/build_context` and can be equally removed.  
 
 ## Build
 
 ```
-$ export XILINXMAIL=my.email@company.com
-$ export XILINXLOGIN='password123'
-$ source ./download/env
 $ ./setup.sh
 ```
-Call setup.sh again now, if no workspace folder is setup, it will return without giving a prompt.
+
+Initially call to setup.sh to setup a mounted folder workspace (if not already around), it will return without giving a prompt.
 ```
 $ ./setup.sh
 
-Preparing docker images - please re-run this script to enter the container image!
-setting up workspace
-READY.
+    Preparing docker images - please re-run this script to enter the container image!
+    setting up workspace
+    READY.
 ```
 
 ## Usage
 
 ```
 $ ./setup.sh
-setting environment
-PATH=/tools/Xilinx/Vitis_HLS/2024.2/bin:/tools/Xilinx/Model_Composer/2024.2/bin:/tools/Xilinx/Vitis/2024.2/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/lin/bin:/tools/Xilinx/Vitis/2024.2/gnu/microblaze/linux_toolchain/lin64_le/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-linux/bin:/tools/Xilinx/Vitis/2024.2/gnu/aarch64/lin/aarch64-none/bin:/tools/Xilinx/Vitis/2024.2/gnu/armr5/lin/gcc-arm-none-eabi/bin:/tools/Xilinx/Vitis/2024.2/aietools/bin:/tools/Xilinx/Vitis/2024.2/gnu/riscv/lin/riscv64-unknown-elf/bin:/tools/Xilinx/Vivado/2024.2/bin:/tools/Xilinx/DocNav:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    setting environment
+    ...
 
 xilinx<20:15:21>::lrub("~/");
 (docker)$ vivado &
@@ -82,8 +87,7 @@ end a container session
 (docker)$ exit
 $
 ```
-A folder _workspace_ is mounted into the docker container. Content in the _workspace_ folder thus remains when exiting the container. What is in the container or installed during runtime is gone after exit.
-
+A folder _workspace_ is mounted into the docker container. Content in the _workspace_ folder thus persists when exiting the container.  
 ## Troubleshooting
 
 remove the container entirely
