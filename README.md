@@ -11,27 +11,22 @@ Docker for Xilinx Vivado IDE development environment.
 - [Petalinux-Vivado-2023.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2023.1)
 - [Petalinux-Vivado-2024.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.1)
 
-NB: Starting 2024.2: No pre-installed petalinux tooling anymore.
+Starting 2024.2: No pre-installed petalinux tooling anymore.
 - [Vivado-2024.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.2)
+- [Vivado-2025.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2025.1)
 
 
-**!!! Check out a tagged version in order to build!!!**
+**!!! Check out a tagged version - branch main won't build !!!**
 
 
 ## Requirements
 
-Have `docker` installed.  
-
-Make sure to have:  
-  - A downloaded ``FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin``
-  - A xilinx account is needed to install the packages (usually free), and to provide the credentials
-  - Environment variables UID, GID, XILINXMAIL and XILINXLOGIN set in the environment
-
+Ensure the following before proceeding:
+- Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file.
+- A Xilinx account (typically free) is required to install the packages and provide login credentials.
+- Have `docker` installed.  
 
 ## Preparation
-
-!!! **Prepare Xilinx login credentials, append the following variables** !!!  
-
 
 Download the installer from the official page.  
 ```
@@ -50,11 +45,12 @@ Provide Xilinx user credentials as env vars.
 $ export XILINXMAIL=my.email@company.com
 $ export XILINXLOGIN='password123'
 ```
-NB: `XILINXMAIL` and `XILINXLOGIN` are only needed for container creation. They are not stored inside the container.  
 
-Edit the `install_config.txt` or use it as is, this is the Xilinx install config.  
+Note: `XILINXMAIL` and `XILINXLOGIN` are required only during container creation and are not stored inside the container.  
 
-After building the image, the folder `download` can be removed, the Xilinx installer .bin file can be found in `./docker/build_context` and can be equally removed.  
+You can either edit the `install_config.txt` file or use it as-is with a given default. This file serves as the Xilinx installation configuration.  
+
+After the image is built, the download folder can be deleted. The Xilinx installer .bin file, located in `./docker/build_context`, can also be safely removed.  
 
 ## Build
 
