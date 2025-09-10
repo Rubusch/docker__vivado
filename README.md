@@ -80,3 +80,37 @@ $ ./setup.sh
 docker$  vivado &
     ...
 ```
+
+## Issues
+
+TL;DR: The container (AMD 2023.1 installer) might work on recent systems.  
+
+For the AMD/Xilinx installer to work, it looks like the host system should have a systemd older than v258 with corresponding kernel. The problem is related to the java codes used by tool `xsetup` for vivado installation. They seem to use the deprecated cgroup v1. If the up-to-date control group v2 is in place, this docker container build process will stop at executing script `./210-*`.  
+
+Check the system: if no entry "memory" is around, you're using the up-to-date control group v2 (this container won't build).  
+```
+$ cat /proc/cgroups
+    ...
+    memory ...
+    ...
+```
+
+There is a documented fix, supposed to work only up until systemd v258 (i.e. before), to provide a kernel boot argument. In this case, do the following on the host system. Append `XXX SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1 systemd.unified_cgroup_hierarchy=0` to the CMDLINE, keeping what was there before.  
+```
+$ sudo vi /etc/default/grub
+    ...
+    GRUB_CMDLINE_LINUX_DEFAULT="... SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1 systemd.unified_cgroup_hierarchy=0"
+    ...
+```
+...then do...
+```
+$ sudo grub-update
+```
+...reboot and hope.  
+
+For other, more recent systems, AMD does not provide a fixed installer to my knowledge, and systemd does not provide direct tweaks to mess up security for such installers. Since docker as technology is based on kernel shares and cgroups, this is a limiting factor here.  
+
+references:  
+- https://stackoverflow.com/questions/71532170/java-lang-nullpointerexception-cannot-invoke-jdk-internal-platform-cgroupinfo
+- https://wiki.archlinux.org/title/Cgroups#Enable_cgroup_v1
+
