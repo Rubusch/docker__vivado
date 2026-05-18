@@ -36,6 +36,7 @@ if [ -z "${CONTAINER}" ]; then
 
 	test -f ${TOPDIR}/${DOWNLOADDIR}/*_Unified_${VERSION}_*_Lin64.bin || die "No *_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
 
+	chmod a+x ${TOPDIR}/${DOWNLOADDIR}/*_Unified_${VERSION}_*_Lin64.bin
 	mv ${TOPDIR}/${DOWNLOADDIR}/*_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
 
 	cd "$DOCKERDIR"
