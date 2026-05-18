@@ -108,7 +108,7 @@ source "${EN_SYS_ENV}"
 
 ## xilinx environment
 test -f "/home/${USER}/workspace/settings.sh" && source "/home/${USER}/workspace/settings.sh"
-source "/tools/Xilinx/2025.1/Vivado/settings64.sh"
+source "/tools/Xilinx/2025.2/Vivado/settings64.sh"
 
 echo "setting environment"
 echo "PATH=${PATH}"

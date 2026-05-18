@@ -14,6 +14,7 @@ Docker for Xilinx Vivado IDE development environment.
 Starting 2024.2: No pre-installed petalinux tooling anymore.
 - [Vivado-2024.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.2)
 - [Vivado-2025.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2025.1)
+- [Vivado-2025.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2025.2)
 
 
 **!!! Check out a tagged version - branch main won't build !!!**

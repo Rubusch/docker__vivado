@@ -1,5 +1,5 @@
 ################################################################################
-FROM ubuntu:22.04 AS vivado-2025.1
+FROM ubuntu:22.04 AS vivado-2025.2
 MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,7 +13,7 @@ ARG XILINXLOGIN="${XILINXLOGIN}"
 ARG DISPLAY="${DISPLAY}"
 ENV MY_CONFIGS="/home/$USER/configs"
 ENV SCRIPTS="/home/$USER/scripts"
-ENV XILINXVERSION="2025.1"
+ENV XILINXVERSION="2025.2"
 
 ################################################################################
 ## set up apt fully functional
@@ -279,7 +279,7 @@ WORKDIR /tools/Xilinx/$XILINXVERSION/Vitis/scripts
 RUN sudo ./installLibs.sh
 
 ## install JTAG driver
-WORKDIR /tools/Xilinx/2025.1/data/xicom/cable_drivers/lin64/install_script/install_drivers
+WORKDIR /tools/Xilinx/2025.2/data/xicom/cable_drivers/lin64/install_script/install_drivers
 RUN sudo ./install_drivers
 
 ################################################################################
