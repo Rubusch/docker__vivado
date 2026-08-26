@@ -102,13 +102,15 @@ if [[ -z "$(echo ${PATH} | grep '/usr/sbin')" ]]; then
     export PATH=${PATH}:/usr/sbin
 fi
 
-## xilinx setup
+## xilinx environment
+source "/tools/Xilinx/${XILINXVERSION}/Vivado/settings64.sh"
+
+## xilinx env var setup
 export EN_SYS_ENV="/home/${USER}/.petalinux-sys.env"
 source "${EN_SYS_ENV}"
 
-## xilinx environment
-test -f "/home/${USER}/workspace/settings.sh" && source "/home/${USER}/workspace/settings.sh"
-source "/tools/Xilinx/2025.1/Vivado/settings64.sh"
+alias xsct="/tools/Xilinx/${XILINXVERSION}/Vitis/bin/loader -exec rdi_xsct"
+alias xsdb="/tools/Xilinx/${XILINXVERSION}/Vitis/bin/loader -exec xsdb"
 
 echo "setting environment"
 echo "PATH=${PATH}"
