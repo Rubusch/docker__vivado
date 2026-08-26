@@ -110,6 +110,9 @@ source "${EN_SYS_ENV}"
 test -f "/home/${USER}/workspace/settings.sh" && source "/home/${USER}/workspace/settings.sh"
 source "/tools/Xilinx/2025.1/Vivado/settings64.sh"
 
+alias xsct="/tools/Xilinx/2025.1/Vitis/bin/loader -exec rdi_xsct"
+alias xsdb="/tools/Xilinx/2025.1/Vitis/bin/loader -exec xsdb"
+
 echo "setting environment"
 echo "PATH=${PATH}"
 echo
