@@ -1,1 +1,1 @@
-./docker/build_context/install_config.txt
+./docker/install_config.txt
