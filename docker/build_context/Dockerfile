@@ -1,6 +1,5 @@
 ################################################################################
 FROM ubuntu:22.04 AS vivado-2024.2
-MAINTAINER Lothar Rubusch <l.rubusch@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 
 ################################################################################
@@ -115,9 +114,9 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 ## locale settings
 USER root
 RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 ################################################################################
 ## user settings
