@@ -1,6 +1,6 @@
 #!/bin/sh -e
 DRYRUN="${1}"
-UID="$(id -u)"
+#UID="$(id -u)"
 GID="$(id -g)"
 USER="$(whoami)"
 
