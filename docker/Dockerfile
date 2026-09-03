@@ -215,12 +215,12 @@ chown -R ${USER}:${USER} /home/${USER}/.Xilinx
 
 su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/${USER}/.Xilinx/install_config.txt'
 
+cd /tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
+./install_drivers
+
 ## Note: usually this script will print errors/warnings,
 ## but dependencies should anyway already be resolved
 /tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh || true
-
-cd /tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
-./install_drivers
 
 rm -rf /tools/Xilinx/.xinstall
 rm -rf /tmp/extracted_xsetup /home/${USER}/.Xilinx /tmp/*.exp
