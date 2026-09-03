@@ -246,7 +246,7 @@ if [ -d "\${HOST_CONFIG_DIR}" ]; then
         if [ "\${cfg}" != "." ] && [ "\${cfg}" != ".." ]; then
             if [ -f "\${cfg_path}" ]; then
                 echo "Syncing configuration profile: \${cfg}"
-                rm -f "\text{\${MY_HOME}/\${cfg}}"
+                rm -f "\${MY_HOME}/\${cfg}"
                 cp "\${cfg_path}" "\${MY_HOME}/\${cfg}"
                 chown "\${MY_USER}":"\${MY_USER}" "\${MY_HOME}/\${cfg}"
             fi
