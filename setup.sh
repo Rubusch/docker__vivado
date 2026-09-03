@@ -65,8 +65,6 @@ else
 		APP=""
 		echo "DOXXXER_UID=$(id -u)" > .env
 		echo "DOXXXER_GID=$(id -g)" >> .env
-		echo
-		echo "Preparing docker images - please re-run this script to enter the container image!"
 	fi
 
 	docker run \
