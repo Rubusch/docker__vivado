@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG XILINXVERSION="2022.1"
+ARG XILINXVERSION="2022.2"
 
 FROM ubuntu:20.04 AS final
 ENV DEBIAN_FRONTEND=noninteractive
