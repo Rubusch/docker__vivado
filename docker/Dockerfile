@@ -127,7 +127,6 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y \
     python3-pip \
     python3-subunit \
     python3-venv \
-    repo \
     rsync \
     screen \
     socat \
