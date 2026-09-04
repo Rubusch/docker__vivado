@@ -1,7 +1,6 @@
 #!/bin/sh -e
-DRYRUN="${1}"
-#UID="$(id -u)"
-GID="$(id -g)"
+DOXXXER_UID="$(id -u)"
+DOXXXER_GID="$(id -g)"
 USER="$(whoami)"
 
 die()
@@ -12,7 +11,6 @@ die()
 
 ## MAIN
 if [ -d ".git" ]; then
-	## if this is a git repo, check if we're on branch "main", then abort
 	if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
 		die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
 	fi
@@ -21,68 +19,81 @@ fi
 test -z "${DOCKERDIR}" && DOCKERDIR="docker"
 test -z "${DOWNLOADDIR}" && DOWNLOADDIR="download"
 TOPDIR="$(pwd)"
-IMAGE="$( grep "^FROM" -HIrn ${DOCKERDIR}/build_context/Dockerfile | awk '{ print $NF }' )"
-VERSION="$( echo ${IMAGE} | awk -F'-' '{ if ($NF == "nightly") {print $(NF-1)} else {print $NF} }' )"
-CONTAINER="$( docker images -q ${IMAGE} 2> /dev/null )" || true
-if [ -z "${CONTAINER}" ]; then
-	## container is not around, build
-	DO_BUILD=1
-else
-	## container around, start
-	cd "${DOCKERDIR}"
-        APP="/bin/bash"
-        if [ ! -e .env ]; then
-            APP=""
-	    echo "UID=$(id -u)" > .env
-	    echo "GID=$(id -g)" >> .env
+DOCKERFILE="${TOPDIR}/${DOCKERDIR}/Dockerfile"
 
-            echo
-            echo "Preparing docker images - please re-run this script to enter the container image!"
-        fi
-
-	docker run \
-	       --rm \
-               --net host \
-               --name ${IMAGE} \
-               -u ${UID}:${GID} \
-               -it \
-               --privileged \
-               -e USER \
-               -e DISPLAY=$DISPLAY \
-               --env-file .env \
-               --group-add 20 \
-               --mount type=bind,source=./build_configs,target=/home/$USER/configs \
-               -v /tmp/.X11-unix:/tmp/.X11-unix \
-               -v ~/.Xauthority:/home/${USER}/.Xauthority:ro \
-               -v ~/.gitconfig:/home/${USER}/.gitconfig:ro \
-               -v ~/.ssh:/home/${USER}/.ssh \
-               -v ./workspace:/home/${USER}/workspace \
-               ${CONTAINER} \
-               ${APP}
-
-	exit 0
+if [ ! -f "${DOCKERFILE}" ]; then
+	die "Dockerfile not found at ${DOCKERFILE}"
 fi
 
-if [ -n "${DO_BUILD}" ]; then
-	DATE="$(date +%Y%m%d%H%M)"
-	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
-	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
+VERSION="$(grep -m 1 "^ARG XILINXVERSION=" "${DOCKERFILE}" | cut -d'"' -f2)"
 
-	chmod a+x ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run
-	mv ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run "${TOPDIR}/${DOCKERDIR}/build_context/"
-	chmod a+x ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin
-	mv ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
+if [ -z "${VERSION}" ]; then
+	die "Could not extract XILINXVERSION from ${DOCKERFILE}"
+fi
 
-        cd "$DOCKERDIR"
+IMAGE="vivado-${VERSION}"
+CONTAINER="$( docker images -q ${IMAGE} 2> /dev/null )" || true
+
+if [ -z "${CONTAINER}" ]; then
+	if [ -z "${XILINXMAIL}" ] || [ -z "${XILINXLOGIN}" ]; then
+		die "Please provide XILINXMAIL and XILINXLOGIN environment variables."
+	fi
+
+	INSTALLER_BIN=$(find "${TOPDIR}/${DOWNLOADDIR}" -name "Xilinx_Unified_${VERSION}_*_Lin64.bin" | head -n 1)
+	if [ -z "${INSTALLER_BIN}" ]; then
+		die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file found in '${TOPDIR}/${DOWNLOADDIR}'"
+	fi
+	chmod a+x ${INSTALLER_BIN}
+
+	PETALINUX_BIN=$(find "${TOPDIR}/${DOWNLOADDIR}" -name "petalinux-v${VERSION}-*-installer.run" | head -n 1)
+	if [ -z "${PETALINUX_BIN}" ]; then
+		die "No petalinux-v${VERSION}-*-installer.run file found in '${TOPDIR}/${DOWNLOADDIR}'"
+	fi
+	chmod a+x ${PETALINUX_BIN}
+
+	cd "$DOCKERDIR"
+
 	docker build \
-               --tag ${IMAGE}:${DATE} \
-               --build-arg UID=${UID} \
-               --build-arg GID=${GID} \
-               --build-arg USER=${USER} \
-               --build-arg XILINXMAIL=${XILINXMAIL} \
-               --build-arg XILINXLOGIN=${XILINXLOGIN} \
-               ./build_context
-	cd "${TOPDIR}/${DOCKERDIR}"
+		--tag ${IMAGE} \
+		--build-context installer="${TOPDIR}/${DOWNLOADDIR}" \
+		--build-arg DOXXXER_UID=${DOXXXER_UID} \
+		--build-arg DOXXXER_GID=${DOXXXER_GID} \
+		--build-arg USER=${USER} \
+		--build-arg XILINXMAIL=${XILINXMAIL} \
+		--build-arg XILINXLOGIN=${XILINXLOGIN} \
+		./
+	cd "${TOPDIR}"
+
+else
+	cd "${DOCKERDIR}"
+	APP="/bin/bash"
+	if [ ! -e .env ]; then
+		APP=""
+		echo "DOXXXER_UID=$(id -u)" > .env
+		echo "DOXXXER_GID=$(id -g)" >> .env
+	fi
+
+	docker run \
+		--rm \
+		--net host \
+		--name ${IMAGE} \
+		-u ${DOXXXER_UID}:${DOXXXER_GID} \
+		-it \
+		--privileged \
+		-e USER \
+		-e DISPLAY=$DISPLAY \
+		--env-file .env \
+		--group-add 20 \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v ~/.Xauthority:/home/${USER}/.Xauthority:ro \
+		-v ~/.gitconfig:/home/${USER}/.gitconfig:ro \
+		-v ~/.ssh:/home/${USER}/.ssh:ro \
+		-v ./configs:/tmp/host_configs:ro \
+		-v ./workspace:/home/${USER}/workspace \
+		${IMAGE} \
+		${APP}
+
+	exit 0
 fi
 
 echo "READY."
