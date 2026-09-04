@@ -244,7 +244,7 @@ if [ -d "\${HOST_CONFIG_DIR}" ]; then
         if [ "\${cfg}" != "." ] && [ "\${cfg}" != ".." ]; then
             if [ -f "\${cfg_path}" ]; then
                 echo "Syncing configuration profile: \${cfg}"
-                rm -f "\text{\${MY_HOME}/\${cfg}}"
+                rm -f "\${MY_HOME}/\${cfg}"
                 cp "\${cfg_path}" "\${MY_HOME}/\${cfg}"
                 chown "\${MY_USER}":"\${MY_USER}" "\${MY_HOME}/\${cfg}"
             fi
@@ -287,11 +287,6 @@ fi
 export SSH_OPTS="-F \${INTERNAL_SSH}/config"
 alias ssh="ssh -F \${INTERNAL_SSH}/config"
 alias git="GIT_SSH_COMMAND='ssh -F \${INTERNAL_SSH}/config' git"
-
-if [ -d "\${WORKSPACE}" ] && [ -z "\$(ls -A "\${WORKSPACE}")" ]; then
-    echo "Initializing empty workspace..."
-    touch "\${WORKSPACE}/.initialized_container"
-fi
 
 echo "=== Environment Ready ==="
 echo
