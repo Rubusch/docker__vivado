@@ -102,13 +102,13 @@ if [[ -z "$(echo ${PATH} | grep '/usr/sbin')" ]]; then
     export PATH=${PATH}:/usr/sbin
 fi
 
-## xilinx/petalinux setup
+## xilinx environment
+source "/tools/petalinux/${XILINXVERSION}/settings.sh"
+source "/tools/Xilinx/Vivado/${XILINXVERSION}/settings64.sh"
+
+## xilinx env var setup
 export EN_SYS_ENV="/home/${USER}/.petalinux-sys.env"
 source "${EN_SYS_ENV}"
-
-## xilinx environment
-source "/home/${USER}/workspace/settings.sh"
-source "/tools/Xilinx/Vivado/2022.2/settings64.sh"
 
 echo "setting environment"
 echo "PATH=${PATH}"
