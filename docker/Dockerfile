@@ -337,7 +337,6 @@ if [ -d "\${WORKSPACE}" ] && [ "\${MY_USER}" != "\$(stat -c %U "\${WORKSPACE}")"
     sudo chown "\${MY_USER}":"\${MY_USER}" -R "\${WORKSPACE}"
 fi
 
-# --- INTEGRATED WORKSPACE PROVISIONING LOGIC ---
 if [ -d "\${WORKSPACE}" ]; then
     # Safely evaluate if the mounted workspace directory is empty
     if [ -z "\$(ls -A "\${WORKSPACE}" 2>/dev/null)" ]; then
@@ -354,7 +353,6 @@ if [ -d "\${WORKSPACE}" ]; then
         echo "NOTE: Mounted workspace is not empty. Preserving existing files."
     fi
 fi
-# -----------------------------------------------
 
 export SSH_OPTS="-F \${INTERNAL_SSH}/config"
 alias ssh="ssh -F \${INTERNAL_SSH}/config"
