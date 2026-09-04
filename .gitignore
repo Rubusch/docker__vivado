@@ -17,4 +17,6 @@ ubu*04
 peta-*
 
 ## docker environment
+docker/configs/.Xilinx/*
+docker/configs/.petalinux-sys.env
 .env
