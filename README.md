@@ -2,8 +2,8 @@
 
 ## Requirements
 Ensure the following before proceeding:
-- Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file.
-- A Xilinx account (typically free) is required to install the packages and provide login credentials.
+- Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file
+- A Xilinx account (typically free) is required to install the packages and provide login credentials
 - Have `docker` installed
 - This setup builds under Linux
 
@@ -21,7 +21,7 @@ $ export XILINXLOGIN='password123'
 ```
 Note: `XILINXMAIL` and `XILINXLOGIN` are required only during container creation and are not stored inside the container.  
 
-In case edit the `install_config.txt` file, or use it as-is with a given default.
+In case edit the `install_config.txt` file, or use it as-is with a given default.  
 ```
 $ ./setup.sh
 ```
@@ -41,4 +41,4 @@ $
 The directory _workspace_ is mounted into the docker container. Content in the _workspace_ folder thus persists when exiting the container.  
 
 The file ./docker/configs/.petalinux-sys.env can be used to register a license server or environment variables. The content of ./docker/configs is copied into the container dynamically, the container image does not need
-to be rebuilt.
+to be rebuilt.  
