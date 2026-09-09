@@ -175,9 +175,8 @@ WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
 
 ## when importing a config
-# RUN --mount=from=installer,target=/mnt/installer \
-#     --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt <<'EOF'
-RUN --mount=from=installer,target=/mnt/installer <<'EOF'
+RUN --mount=from=installer,target=/mnt/installer \
+    --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt <<'EOF'
 set -ex
 
 export XILINXMAIL="${XILINXMAIL}"
@@ -261,7 +260,7 @@ EXP220
 su "${USER}" -c 'expect /tmp/220.exp'
 
 mkdir -p /home/${USER}/.Xilinx
-#cp /tmp/install_config.txt /home/${USER}/.Xilinx/install_config.txt
+cp /tmp/install_config.txt /home/${USER}/.Xilinx/install_config.txt
 chown -R ${USER}:${USER} /home/${USER}/.Xilinx
 
 su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/${USER}/.Xilinx/install_config.txt'
