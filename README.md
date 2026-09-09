@@ -12,6 +12,7 @@ Download the installer from the official page.
 ```
 $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
+$ cp <Downloads>/petalinux-*-installer.run ./download
 ```
 
 Provide Xilinx user credentials as env vars for the build session.  
