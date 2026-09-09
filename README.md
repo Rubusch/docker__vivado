@@ -14,7 +14,7 @@ $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
 ```
 
-Provide Xilinx user credentials as env vars for the build session.
+Provide Xilinx user credentials as env vars for the build session.  
 ```
 $ export XILINXMAIL=my.email@company.com
 $ export XILINXLOGIN='password123'
