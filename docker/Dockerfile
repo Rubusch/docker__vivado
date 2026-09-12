@@ -174,11 +174,13 @@ WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
 
 RUN --mount=from=installer,target=/mnt/installer \
-    --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt <<'EOF'
+    --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt \
+    --mount=type=secret,id=XILINXMAIL \
+    --mount=type=secret,id=XILINXLOGIN <<'EOF'
 set -ex
 
-export XILINXMAIL="${XILINXMAIL}"
-export XILINXLOGIN="${XILINXLOGIN}"
+export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
+export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
 
 PETALINUX_BIN=$( find /mnt/installer -name "petalinux-v${XILINXVERSION}-*-installer.run" | head -n 1 )
 if [ -z "$PETALINUX_BIN" ]; then
@@ -213,7 +215,7 @@ send -- "y\r"
 expect -re ".*Enter target directory for SDK.*: "
 send -- "\r"
 
-## location "workspace" already exists, contains data - overwrite? really?
+## really sure?
 expect -re ".*Proceed \[y/N\]?.*"
 send -- "y\r"
 expect eof
@@ -258,8 +260,6 @@ su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --conf
 cd /tools/Xilinx/Vitis/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
 ./install_drivers
 
-## Note: usually this script will print errors/warnings,
-## but dependencies should anyway already be resolved
 /tools/Xilinx/Vitis/${XILINXVERSION}/scripts/installLibs.sh || true
 
 rm -rf /tools/Xilinx/.xinstall
@@ -275,6 +275,7 @@ set -e
 MY_USER="\$(whoami)"
 MY_HOME="/home/\${MY_USER}"
 WORKSPACE="\${MY_HOME}/workspace"
+TEMPLATE_DIR="\${MY_HOME}/workspace.template"
 
 HOST_CONFIG_DIR="/tmp/host_configs"
 if [ -d "\${HOST_CONFIG_DIR}" ]; then
@@ -324,14 +325,23 @@ if [ -d "\${WORKSPACE}" ] && [ "\${MY_USER}" != "\$(stat -c %U "\${WORKSPACE}")"
     sudo chown "\${MY_USER}":"\${MY_USER}" -R "\${WORKSPACE}"
 fi
 
+if [ -d "\${WORKSPACE}" ]; then
+    if [ -z "\$(ls -A "\${WORKSPACE}" 2>/dev/null)" ]; then
+        if [ -d "\${TEMPLATE_DIR}" ]; then
+            echo "Populating empty workspace volume from image template..."
+            cp -rp "\${TEMPLATE_DIR}"/. "\${WORKSPACE}/"
+            echo "Workspace population complete."
+        else
+            echo "Workspace population skipped: No '\${TEMPLATE_DIR}' exists in this image branch."
+        fi
+    else
+        echo "NOTE: Mounted workspace is not empty. Preserving existing files."
+    fi
+fi
+
 export SSH_OPTS="-F \${INTERNAL_SSH}/config"
 alias ssh="ssh -F \${INTERNAL_SSH}/config"
 alias git="GIT_SSH_COMMAND='ssh -F \${INTERNAL_SSH}/config' git"
-
-if [ -d "\${WORKSPACE}" ] && [ -z "\$(ls -A "\${WORKSPACE}")" ]; then
-    echo "Initializing empty workspace..."
-    touch "\${WORKSPACE}/.initialized_container"
-fi
 
 echo "=== Environment Ready ==="
 echo
@@ -340,6 +350,10 @@ exec "\$@"
 EOF
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+RUN mkdir -p /home/${USER}/.bitbake && \
+    echo 'INHERIT += "rm_work"' > /home/${USER}/.bitbake/site.conf && \
+    chown -R ${USER}:${USER} /home/${USER}/.bitbake
 
 USER $USER
 WORKDIR /home/$USER

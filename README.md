@@ -30,10 +30,22 @@ $ ./setup.sh
 ## Usage
 ```
 $ ./setup.sh
-(docker)$ vivado &
 ```
 
-End a container session
+Start tools
+```
+(docker)$ vivado &
+```
+or
+```
+(docker)$ xsct
+```
+or
+```
+(docker)$ xsdb
+```
+
+End a container session  
 ```
 (docker)$ exit
 $
