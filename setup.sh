@@ -59,8 +59,8 @@ if [ -z "${CONTAINER}" ]; then
 		--build-arg DOXXXER_UID=${DOXXXER_UID} \
 		--build-arg DOXXXER_GID=${DOXXXER_GID} \
 		--build-arg USER=${USER} \
-		--build-arg XILINXMAIL=${XILINXMAIL} \
-		--build-arg XILINXLOGIN=${XILINXLOGIN} \
+		--secret id=XILINXMAIL,env=XILINXMAIL \
+		--secret id=XILINXLOGIN,env=XILINXLOGIN \
 		./
 	cd "${TOPDIR}"
 
@@ -90,6 +90,8 @@ else
 		-v ~/.ssh:/home/${USER}/.ssh:ro \
 		-v ./configs:/tmp/host_configs:ro \
 		-v ./workspace:/home/${USER}/workspace \
+		-v ./configs/.Xilinx:/home/${USER}/.Xilinx \
+		-v petalinux_scratch:/home/${USER}/petalinux_scratch \
 		${IMAGE} \
 		${APP}
 

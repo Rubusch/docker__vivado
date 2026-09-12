@@ -174,13 +174,14 @@ RUN mkdir -p /tools && chown ${USER}:${USER} /tools
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
 
-## when importing a config
 RUN --mount=from=installer,target=/mnt/installer \
-    --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt <<'EOF'
+    --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt \
+    --mount=type=secret,id=XILINXMAIL \
+    --mount=type=secret,id=XILINXLOGIN <<'EOF'
 set -ex
 
-export XILINXMAIL="${XILINXMAIL}"
-export XILINXLOGIN="${XILINXLOGIN}"
+export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
+export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
 
 PETALINUX_BIN=$( find /mnt/installer -name "petalinux-v${XILINXVERSION}-*-installer.run" | head -n 1 )
 if [ -z "$PETALINUX_BIN" ]; then
@@ -224,7 +225,6 @@ send -- "y\r"
 ## really sure?
 expect -re ".*Please input \"y\" to continue to install PetaLinux in that directory?.*"
 send -- "y\r"
-
 expect eof
 EXP100
 su "${USER}" -c "expect /tmp/100.exp ${PETALINUX_BIN} /tools/petalinux/${XILINXVERSION}"
@@ -268,8 +268,6 @@ su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --conf
 cd /tools/Xilinx/Vitis/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
 ./install_drivers
 
-## Note: usually this script will print errors/warnings,
-## but dependencies should anyway already be resolved
 /tools/Xilinx/Vitis/${XILINXVERSION}/scripts/installLibs.sh || true
 
 rm -rf /tools/Xilinx/.xinstall
@@ -360,6 +358,10 @@ exec "\$@"
 EOF
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+RUN mkdir -p /home/${USER}/.bitbake && \
+    echo 'INHERIT += "rm_work"' > /home/${USER}/.bitbake/site.conf && \
+    chown -R ${USER}:${USER} /home/${USER}/.bitbake
 
 USER $USER
 WORKDIR /home/$USER
