@@ -1,92 +1,57 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-# Container for Xilinx Vivado
-
-Docker for Xilinx Vivado IDE. Staged build on external base container.  
-
-- [Petalinux-Vivado-2020.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.1)
-- [Petalinux-Vivado-2020.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2020.2)
-- [Petalinux-Vivado-2022.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.1)
-- [Petalinux-Vivado-2022.2](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2022.2)
-- [Petalinux-Vivado-2023.1](https://github.com/Rubusch/docker__peta-vivado/tree/xilinx-2023.1)
-
-**!!! Check out a tagged version in order to build!!!**
-
-
 ## Requirements
+Ensure the following before proceeding:
+- Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file
+- A Xilinx account (typically free) is required to install the packages and provide login credentials
+- Have `docker` installed
+- This setup builds under Linux
 
-Tools needed for e.g. Ubuntu 18.04 (host)  
-
-```
-$ sudo apt-get install -y libffi-dev libssl-dev
-$ sudo apt-get install -y python3-dev
-$ sudo apt-get install -y python3-pyqt5 python3-pyqt5.qtwebengine python3-pypathlib
-$ sudo apt-get install -y python3 python3-pip
-$ pip3 install docker-compose
-```
-Make sure, ``~/.local`` is within ``$PATH`` or re-link e.g. it to ``/usr/local``.  
-
-Make sure to have docker setup correctly, e.g.  
-```
-$ sudo usermod -aG docker $USER
-```
-
-Make sure to have:  
-  - A downloaded ``Xilinx_Unified_*_Lin64.bin``
-  - A downloaded ``petalinux-*-installer.run`` from https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html
-  - A xilinx account is needed to install the packages (usually free), and to provide the credentials
-
-
-## Preparation
-
-!!! **Prepare Xilinx login credentials, append the following variables** !!!  
-
-
-Provide Xilinx Vivado installer, Petalinux installer and credentials. Download the installer from the official page.  
-
+## Build
+Download the installer from the official page.  
 ```
 $ mkdir ./download
-$ cp <Downloads>/Xilinx_Unified_*_Lin64.bin ./download
+$ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
 $ cp <Downloads>/petalinux-*-installer.run ./download
-$ echo "UID=$(id -u)" > ./download/.env
-$ echo "GID=$(id -g)" >> ./download/.env
-$ vi ./download/.env
-    ...
-    XILINXMAIL='<my email>'
-    XILINXLOGIN='<my xilinx password>'
 ```
-NB: XILINXMAIL and XILINXLOGIN are only needed for container creation. They are not stored inside the container. The entries can be removed from the .env file after installation! The .env is not tracked by git.  
 
-Example:  
+Provide Xilinx user credentials as env vars for the build session.  
 ```
-$ tree -a ./download/
-    ./download/
-    ├── .env
-    ├── petalinux-v2020.2-*-installer.run
-    └── Xilinx_Unified_2020.2_*_Lin64.bin
-
-    0 directories, 3 files
-
-$ cat ./download/.env
-    UID=105601750
-    GID=105600513
-    XILINXMAIL=my.email@company.com
-    XILINXLOGIN='password123'
+$ export XILINXMAIL=my.email@company.com
+$ export XILINXLOGIN='password123'
 ```
-After building the image, the folder `download` can be removed. The installer files will be in the respective `build_context` folders and can be equally removed.
+Note: `XILINXMAIL` and `XILINXLOGIN` are required only during container creation and are not stored inside the container.  
 
-## Build and Usage
-
+In case edit the `install_config.txt` file, or use it as-is with a given default.  
 ```
 $ ./setup.sh
 ```
 
-
-### Manual Usage
-
+## Usage
 ```
-$ cd ./docker
-$ docker-compose -f ./docker-compose.yml run --rm peta-vivado-2020.2 /bin/bash
-docker$  vivado &
-    ...
+$ ./setup.sh
 ```
+
+Start tools
+```
+(docker)$ vivado &
+```
+or
+```
+(docker)$ xsct
+```
+or
+```
+(docker)$ xsdb
+```
+
+End a container session  
+```
+(docker)$ exit
+$
+```
+
+The directory _workspace_ is mounted into the docker container. Content in the _workspace_ folder thus persists when exiting the container.  
+
+The file ./docker/configs/.petalinux-sys.env can be used to register a license server or environment variables. The content of ./docker/configs is copied into the container dynamically, the container image does not need
+to be rebuilt.  

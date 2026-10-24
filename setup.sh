@@ -1,5 +1,7 @@
 #!/bin/sh -e
-DRYRUN="${1}"
+DOXXXER_UID="$(id -u)"
+DOXXXER_GID="$(id -g)"
+USER="$(whoami)"
 
 die()
 {
@@ -7,74 +9,92 @@ die()
 	exit 1
 }
 
-do_env()
-{
-	test -e .env && return || true
-	rm -f .env  ## in case of broken symlink
-	echo "UID=$(id -u)" > .env
-	echo "GID=$(id -g)" >> .env
-}
-
-build()
-{
-	CONTAINER_NAME="$(grep "container_name:" -r "${1}/docker-compose.yml" | awk -F: '{ print $2 }' | tr -d ' ')"
-	cd "${1}"
-	if [ -n "${2}" ]; then
-		docker-compose build --no-cache
-	else
-		docker-compose up --exit-code-from "${CONTAINER_NAME}"
-	fi
-	cd -
-}
-
-link()
-{
-	src="${1}" ## source to link
-	dst="${2}" ## target directory, where to place the link
-	test -f "${src}" || die "file '${src}' is missing or not accessable"
-	test -L "${dst}/$( basename ${src} )" && return || true
-	cd "${dst}"
-	ln -s "${src}" .
-	cd -
-}
-
 ## MAIN
 if [ -d ".git" ]; then
-	## if this is a git repo, check if we're on branch "main", then abort
 	if [ "main" = "$( git rev-parse --abbrev-ref HEAD )" ]; then
 		die "THIS IS MAIN, PLEASE CHANGE TO ONE OF THE GIT BRANCHES"
 	fi
 fi
 
-TOPDIR="$(pwd)"
 test -z "${DOCKERDIR}" && DOCKERDIR="docker"
 test -z "${DOWNLOADDIR}" && DOWNLOADDIR="download"
-IMAGE="$( grep "^FROM" -HIrn ${DOCKERDIR}/build_context/Dockerfile | awk '{ print $NF }' )"
-VERSION="$( echo ${IMAGE} | awk -F'-' '{ if ($NF == "nightly") {print $(NF-1)} else {print $NF} }' )"
+TOPDIR="$(pwd)"
+DOCKERFILE="${TOPDIR}/${DOCKERDIR}/Dockerfile"
 
-CONTAINER="$( docker images | grep "${IMAGE}" | awk '{print $3}' )" || true
+if [ ! -f "${DOCKERFILE}" ]; then
+	die "Dockerfile not found at ${DOCKERFILE}"
+fi
+
+VERSION="$(grep -m 1 "^ARG XILINXVERSION=" "${DOCKERFILE}" | cut -d'"' -f2)"
+
+if [ -z "${VERSION}" ]; then
+	die "Could not extract XILINXVERSION from ${DOCKERFILE}"
+fi
+
+IMAGE="vivado-${VERSION}"
+CONTAINER="$( docker images -q ${IMAGE} 2> /dev/null )" || true
+
 if [ -z "${CONTAINER}" ]; then
-	## container is not around, build
-	DO_BUILD=1
+	if [ -z "${XILINXMAIL}" ] || [ -z "${XILINXLOGIN}" ]; then
+		die "Please provide XILINXMAIL and XILINXLOGIN environment variables."
+	fi
+
+	INSTALLER_BIN=$(find "${TOPDIR}/${DOWNLOADDIR}/" -name "Xilinx_Unified_${VERSION}_*_Lin64.bin" | head -n 1)
+	if [ -z "${INSTALLER_BIN}" ]; then
+		die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file found in '${TOPDIR}/${DOWNLOADDIR}'"
+	fi
+	chmod a+x ${INSTALLER_BIN}
+
+	PETALINUX_BIN=$(find "${TOPDIR}/${DOWNLOADDIR}/" -name "petalinux-v${VERSION}-*-installer.run" | head -n 1)
+	if [ -z "${PETALINUX_BIN}" ]; then
+		die "No petalinux-v${VERSION}-*-installer.run file found in '${TOPDIR}/${DOWNLOADDIR}'"
+	fi
+	chmod a+x ${PETALINUX_BIN}
+
+	cd "$DOCKERDIR"
+
+	docker build \
+		--tag ${IMAGE} \
+		--build-context installer="${TOPDIR}/${DOWNLOADDIR}/" \
+		--build-arg DOXXXER_UID=${DOXXXER_UID} \
+		--build-arg DOXXXER_GID=${DOXXXER_GID} \
+		--build-arg USER=${USER} \
+		--secret id=XILINXMAIL,env=XILINXMAIL \
+		--secret id=XILINXLOGIN,env=XILINXLOGIN \
+		./
+	cd "${TOPDIR}"
+
 else
-	## container around, start
 	cd "${DOCKERDIR}"
-	do_env
-	docker-compose -f ./docker-compose.yml run --rm "${IMAGE}" /bin/bash
+	APP="/bin/bash"
+	if [ ! -e .env ]; then
+		APP=""
+		echo "DOXXXER_UID=$(id -u)" > .env
+		echo "DOXXXER_GID=$(id -g)" >> .env
+	fi
+
+	docker run \
+		--rm \
+		--net host \
+		--name ${IMAGE} \
+		-u ${DOXXXER_UID}:${DOXXXER_GID} \
+		-it \
+		--privileged \
+		-e USER \
+		-e DISPLAY=$DISPLAY \
+		--env-file .env \
+		--group-add 20 \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v ~/.Xauthority:/home/${USER}/.Xauthority:ro \
+		-v ~/.gitconfig:/home/${USER}/.gitconfig:ro \
+		-v ~/.ssh:/home/${USER}/.ssh:ro \
+		-v ./configs:/tmp/host_configs:ro \
+		-v ./workspace:/home/${USER}/workspace \
+		-v ./configs/.Xilinx:/home/${USER}/.Xilinx \
+		${IMAGE} \
+		${APP}
+
 	exit 0
-fi
-
-if [ -n "${DO_BUILD}" ]; then
-	test -f ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run || die "No petalinux installer provided! Please, put a petalinux-v${VERSION}-*-installer.run  in '${TOPDIR}/${DOWNLOADDIR}'"
-	test -f ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin || die "No Xilinx_Unified_${VERSION}_*_Lin64.bin file provided in '${TOPDIR}/${DOWNLOADDIR}'"
-fi
-
-if [ -n "${DO_BUILD}" ]; then
-	link "${TOPDIR}/${DOWNLOADDIR}"/.env "${TOPDIR}/${DOCKERDIR}"/
-	mv ${TOPDIR}/${DOWNLOADDIR}/petalinux-v${VERSION}-*-installer.run "${TOPDIR}/${DOCKERDIR}/build_context/"
-	mv ${TOPDIR}/${DOWNLOADDIR}/Xilinx_Unified_${VERSION}_*_Lin64.bin "${TOPDIR}/${DOCKERDIR}/build_context/"
-	build "${DOCKERDIR}" "${DRYRUN}"
-	cd "${TOPDIR}/${DOCKERDIR}"
 fi
 
 echo "READY."
