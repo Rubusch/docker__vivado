@@ -35,15 +35,23 @@ IMAGE="vivado-${VERSION}"
 CONTAINER="$( docker images -q ${IMAGE} 2> /dev/null )" || true
 
 if [ -z "${CONTAINER}" ]; then
-	if [ -z "${XILINXMAIL}" ] || [ -z "${XILINXLOGIN}" ]; then
-		die "Please provide XILINXMAIL and XILINXLOGIN environment variables."
-	fi
-
 	INSTALLER_BIN=$(find "${TOPDIR}/${DOWNLOADDIR}/" -name "FPGAs_AdaptiveSoCs_Unified_SDI_${VERSION}_*_Lin64.bin" | head -n 1)
-	if [ -z "${INSTALLER_BIN}" ]; then
-		die "No FPGAs_AdaptiveSoCs_Unified_SDI_${VERSION}_*_Lin64.bin file found in '${TOPDIR}/${DOWNLOADDIR}'"
+	INSTALLER_TAR=$(find "${TOPDIR}/${DOWNLOADDIR}/" -name "FPGAs_AdaptiveSoCs_Unified_SDI_${VERSION}_*.tar" | head -n 1)
+
+	BUILD_SECRETS=""
+	if [ -n "${INSTALLER_BIN}" ]; then
+		echo "Found Web Installer: $(basename ${INSTALLER_BIN})"
+		if [ -z "${XILINXMAIL}" ] || [ -z "${XILINXLOGIN}" ]; then
+			die "Web installer requires XILINXMAIL and XILINXLOGIN environment variables."
+		fi
+		chmod a+x ${INSTALLER_BIN}
+		BUILD_SECRETS="--secret id=XILINXMAIL,env=XILINXMAIL --secret id=XILINXLOGIN,env=XILINXLOGIN"
+
+	elif [ -n "${INSTALLER_TAR}" ]; then
+		echo "Found Full Offline Installer SFD: $(basename ${INSTALLER_TAR})"
+	else
+		die "No valid .bin or .tar.gz installer found for version ${VERSION} in '${TOPDIR}/${DOWNLOADDIR}'"
 	fi
-	chmod a+x ${INSTALLER_BIN}
 
 	cd "$DOCKERDIR"
 
@@ -53,11 +61,9 @@ if [ -z "${CONTAINER}" ]; then
 		--build-arg DOXXXER_UID=${DOXXXER_UID} \
 		--build-arg DOXXXER_GID=${DOXXXER_GID} \
 		--build-arg USER=${USER} \
-		--secret id=XILINXMAIL,env=XILINXMAIL \
-		--secret id=XILINXLOGIN,env=XILINXLOGIN \
+		${BUILD_SECRETS} \
 		./
 	cd "${TOPDIR}"
-
 else
 	cd "${DOCKERDIR}"
 	APP="/bin/bash"
