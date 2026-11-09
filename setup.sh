@@ -50,7 +50,7 @@ if [ -z "${CONTAINER}" ]; then
 	elif [ -n "${INSTALLER_TAR}" ]; then
 		echo "Found Full Offline Installer SFD: $(basename ${INSTALLER_TAR})"
 	else
-		die "No valid .bin or .tar.gz installer found for version ${VERSION} in '${TOPDIR}/${DOWNLOADDIR}'"
+		die "No valid .bin or .tar installer found for version ${VERSION} in '${TOPDIR}/${DOWNLOADDIR}'"
 	fi
 
 	cd "$DOCKERDIR"
