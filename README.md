@@ -10,6 +10,7 @@ Ensure the following before proceeding:
 
 ## Build
 Download your installer (web or full) from the official page, and place it in a directory `download`.  
+Note the web installer is a `*_Lin64.bin`, the full installer is a `*.tar` file.  
 ```
 $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
