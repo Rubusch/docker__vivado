@@ -258,7 +258,6 @@ if [ -z "$PETALINUX_BIN" ]; then
     echo "Petalinux binary not found!"
     exit 1
 fi
-cp $PETALINUX_BIN /tmp/
 
 cd /tmp
 mkdir -p /tools/petalinux/${XILINXVERSION}
@@ -267,7 +266,7 @@ chown -R "${USER}":"${USER}" /tools/petalinux/${XILINXVERSION}
 cat << 'EXP100' > /tmp/100.exp
 set INSTALLER [lindex $argv 0]
 set TARGET_DIR [lindex $argv 1]
-spawn $INSTALLER $TARGET_DIR
+spawn $INSTALLER --dir $TARGET_DIR
 match_max 100000
 
 ## preamble
@@ -286,7 +285,7 @@ send -- "y\r"
 
 ## install?
 expect -re ".*Enter target directory for SDK.*: "
-send -- $TARGET_DIR\r"
+send -- "$TARGET_DIR\r"
 
 ## really sure?
 expect -re ".*Proceed \[y/N\]?.*"
