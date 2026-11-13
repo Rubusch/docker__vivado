@@ -2,6 +2,7 @@
 
 ## Requirements
 Ensure the following before proceeding:
+- Either download the full installer (SFP) file, or
 - Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file
 - A Xilinx account (typically free) is required to install the packages and provide login credentials
 - Have `docker` installed
@@ -10,14 +11,15 @@ Ensure the following before proceeding:
   Thus either use Ubuntu <= v24.04, or try to apply the described fix down below.
 
 ## Build
-Download the installer from the official page.  
+Download your installer (web or full) from the official page, and place it in a directory `download`.  
+Note the web installer is a `*_Lin64.bin`, the full installer is a `*.tar.gz` file.  
 ```
 $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
 $ cp <Downloads>/petalinux-*-installer.run ./download
 ```
 
-Provide Xilinx user credentials as env vars for the build session.  
+When using the full installer, that's it. For the web installer, provide Xilinx user credentials as env vars for the build session.  
 ```
 $ export XILINXMAIL=my.email@company.com
 $ export XILINXLOGIN='password123'
