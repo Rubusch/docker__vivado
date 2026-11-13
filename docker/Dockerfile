@@ -6,7 +6,10 @@ FROM ubuntu:22.04 AS final
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG XILINXVERSION
-ARG USER DOXXXER_UID DOXXXER_GID XILINXMAIL XILINXLOGIN
+ARG USER
+ARG DOXXXER_UID
+ARG DOXXXER_GID
+
 ENV XILINXVERSION=${XILINXVERSION}
 
 RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y \
@@ -177,13 +180,80 @@ SHELL ["/bin/bash", "-c"]
 
 RUN --mount=from=installer,target=/mnt/installer \
     --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt \
-    --mount=type=secret,id=XILINXMAIL \
-    --mount=type=secret,id=XILINXLOGIN <<'EOF'
+    --mount=type=secret,id=XILINXMAIL,required=false \
+    --mount=type=secret,id=XILINXLOGIN,required=false <<'EOF'
 set -ex
 
-export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
-export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
+INSTALLER_BIN=$(find /mnt/installer -name "FPGAs_AdaptiveSoCs_Unified_*${XILINXVERSION}_*_Lin64.bin" | head -n 1)
+INSTALLER_TAR=$(find /mnt/installer -name "FPGAs_AdaptiveSoCs_Unified_*${XILINXVERSION}_*.tar.gz" | head -n 1)
 
+mkdir -p /tmp/extracted_xsetup
+
+if [ -n "$INSTALLER_TAR" ]; then
+    echo "=== Processing Full Offline Installer SFD (No Credentials Required) ==="
+    tar -xzf "$INSTALLER_TAR" -C /tmp/extracted_xsetup --strip-components=1
+    cd /tmp/extracted_xsetup
+
+elif [ -n "$INSTALLER_BIN" ]; then
+    echo "=== Processing Web Installer Binary ==="
+    if [ ! -f /run/secrets/XILINXMAIL ] || [ ! -f /run/secrets/XILINXLOGIN ]; then
+        echo "Error: Web installer matched but credential secrets were not passed from the host!"
+        exit 1
+    fi
+
+    export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
+    export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
+
+    "$INSTALLER_BIN" --keep --noexec --target /tmp/extracted_xsetup
+    cd /tmp/extracted_xsetup
+
+## heredoc: keep this indention!
+    cat << 'EXP220' > /tmp/220.exp
+match_max 100000
+spawn ./xsetup -b AuthTokenGen
+expect -re "E-mail Address:"
+send -- "$env(XILINXMAIL)\r"
+expect -re "Password:"
+send -- "$env(XILINXLOGIN)\r"
+expect eof
+EXP220
+## heredoc done
+    su "${USER}" -c 'expect /tmp/220.exp'
+else
+    echo "Error: No matching Vivado installer file found in the build context!"
+    exit 1
+fi
+
+cat << 'EXP210' > /tmp/210.exp
+match_max 100000
+spawn ./xsetup -b ConfigGen
+expect -re "Please choose:"
+send -- "1\r"
+expect eof
+EXP210
+su "${USER}" -c 'expect /tmp/210.exp'
+
+mkdir -p /tools/Xilinx
+chown -R ${USER}:${USER} /tools/Xilinx
+
+mkdir -p /home/${USER}/.Xilinx
+cp /tmp/install_config.txt /home/${USER}/.Xilinx/install_config.txt
+
+sed -i 's|^Destination=.*|Destination=/tools/Xilinx|g' /home/${USER}/.Xilinx/install_config.txt
+chown -R ${USER}:${USER} /home/${USER}/.Xilinx
+
+su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/${USER}/.Xilinx/install_config.txt'
+
+if [ -d "/tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers" ]; then
+    cd /tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
+    ./install_drivers
+fi
+
+if [ -f "/tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh" ]; then
+    /tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh || true
+fi
+
+## petalinux
 PETALINUX_BIN=$( find /mnt/installer -name "petalinux-v${XILINXVERSION}-*-installer.run" | head -n 1 )
 if [ -z "$PETALINUX_BIN" ]; then
     echo "Petalinux binary not found!"
@@ -196,7 +266,8 @@ chown -R "${USER}":"${USER}" /tools/petalinux/${XILINXVERSION}
 
 cat << 'EXP100' > /tmp/100.exp
 set INSTALLER [lindex $argv 0]
-spawn $INSTALLER
+set TARGET_DIR [lindex $argv 1]
+spawn $INSTALLER --dir $TARGET_DIR
 match_max 100000
 
 ## preamble
@@ -222,55 +293,20 @@ send -- "y\r"
 expect -re ".*Please input \"y\" to proceed the installation, \"n\" to exit otherwise:"
 send -- "y\r"
 
+## install?
+expect -re ".*Enter target directory for SDK.*: "
+send -- "$TARGET_DIR\r"
+
 ## really sure?
 expect -re ".*Please input \"y\" to continue to install PetaLinux in that directory?.*"
 send -- "y\r"
 expect eof
 EXP100
-su "${USER}" -c "expect /tmp/100.exp ${PETALINUX_BIN}"
-
-INSTALLER_BIN=$(find /mnt/installer -name "FPGAs_AdaptiveSoCs_Unified_*${XILINXVERSION}_*_Lin64.bin" | head -n 1)
-if [ -z "$INSTALLER_BIN" ]; then
-    echo "Installer binary not found!"
-    exit 1
-fi
-
-"$INSTALLER_BIN" --keep --noexec --target /tmp/extracted_xsetup
-cd /tmp/extracted_xsetup
-
-cat << 'EXP210' > /tmp/210.exp
-match_max 100000
-spawn ./xsetup -b ConfigGen
-expect -re "Please choose:"
-send -- "1\r"
-expect eof
-EXP210
-su "${USER}" -c 'expect /tmp/210.exp'
-
-cat << 'EXP220' > /tmp/220.exp
-match_max 100000
-spawn ./xsetup -b AuthTokenGen
-expect -re "E-mail Address:"
-send -- "$env(XILINXMAIL)\r"
-expect -re "Password:"
-send -- "$env(XILINXLOGIN)\r"
-expect eof
-EXP220
-su "${USER}" -c 'expect /tmp/220.exp'
-
-mkdir -p /home/${USER}/.Xilinx
-cp /tmp/install_config.txt /home/${USER}/.Xilinx/install_config.txt
-chown -R ${USER}:${USER} /home/${USER}/.Xilinx
-
-su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/${USER}/.Xilinx/install_config.txt'
-
-cd /tools/Xilinx/Vitis/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
-./install_drivers
-
-/tools/Xilinx/Vitis/${XILINXVERSION}/scripts/installLibs.sh || true
+su "${USER}" -c "expect /tmp/100.exp ${PETALINUX_BIN} /tools/petalinux/${XILINXVERSION}"
 
 rm -rf /tools/Xilinx/.xinstall
 rm -rf /tmp/extracted_xsetup /home/${USER}/.Xilinx /tmp/*.exp
+rm -rf /tmp/petalinux-*
 EOF
 
 RUN ln -sf /usr/bin/python3 /usr/bin/python
