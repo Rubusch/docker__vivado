@@ -1,42 +1,22 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-# Container for Xilinx Vivado
-Docker for Xilinx Vivado IDE development environment.  
-
-- [Vivado-2020.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2020.1)
-- [Vivado-2020.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2020.2)
-- [Vivado-2020.3](https://github.com/Rubusch/docker__vivado/tree/xilinx-2020.3)
-- [Vivado-2021.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2021.1)
-- [Vivado-2021.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2021.2)
-- [Vivado-2022.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2022.1)
-- [Vivado-2022.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2022.2)
-- [Vivado-2023.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2023.1)
-- [Vivado-2023.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2023.2)
-- [Vivado-2024.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.1)
-- [Vivado-2024.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2024.2)
-- [Vivado-2025.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2025.1)
-- [Vivado-2025.2](https://github.com/Rubusch/docker__vivado/tree/xilinx-2025.2)
-- [Vivado-2026.1](https://github.com/Rubusch/docker__vivado/tree/xilinx-2026.1)
-
-Note: Starting 2024.2, no pre-installed petalinux tooling anymore!
-
-**!!! Check out a tagged version - branch main won't build !!!**
-
 ## Requirements
 Ensure the following before proceeding:
+- Either download the full installer (SFP) file, or
 - Download the `FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin` file
 - A Xilinx account (typically free) is required to install the packages and provide login credentials
 - Have `docker` installed
 - This setup builds under Linux
 
 ## Build
-Download the installer from the official page.  
+Download your installer (web or full) from the official page, and place it in a directory `download`.  
+Note the web installer is a `*_Lin64.bin`, the full installer is a `*.tar` file.  
 ```
 $ mkdir ./download
 $ cp <Downloads>/FPGAs_AdaptiveSoCs_Unified_*_Lin64.bin ./download
 ```
 
-Provide Xilinx user credentials as env vars for the build session.  
+When using the full installer, that's it. For the web installer, provide Xilinx user credentials as env vars for the build session.  
 ```
 $ export XILINXMAIL=my.email@company.com
 $ export XILINXLOGIN='password123'
@@ -57,6 +37,10 @@ Start tools
 ```
 (docker)$ vivado &
 ```
+or
+```
+(docker)$ xsdb
+```
 
 End a container session  
 ```
@@ -68,3 +52,12 @@ The directory _workspace_ is mounted into the docker container. Content in the _
 
 The file ./docker/configs/.petalinux-sys.env can be used to register a license server or environment variables. The content of ./docker/configs is copied into the container dynamically, the container image does not need
 to be rebuilt.  
+
+## Issues
+
+```
+$ vivado &
+$ ERROR: Vivado Design Suite cannot be launched because a valid license was not found. Visit the Vivado Licensing page to choose and generate the right license.
+```
+
+Either generate a floating license and register it. Or, register the licensing server in ./docker/configs/.petalinux-sys.env
