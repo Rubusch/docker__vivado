@@ -6,7 +6,7 @@ FROM ubuntu:24.04 AS final
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG XILINXVERSION
-ARG USER DOXXXER_UID DOXXXER_GID XILINXMAIL XILINXLOGIN
+ARG USER DOXXXER_UID DOXXXER_GID
 ENV XILINXVERSION=${XILINXVERSION}
 
 RUN apt-get update && apt-get install -y wget software-properties-common && \
@@ -186,21 +186,49 @@ SHELL ["/bin/bash", "-c"]
 
 RUN --mount=from=installer,target=/mnt/installer \
     --mount=type=bind,source=./install_config.txt,target=/tmp/install_config.txt \
-    --mount=type=secret,id=XILINXMAIL \
-    --mount=type=secret,id=XILINXLOGIN <<'EOF'
+    --mount=type=secret,id=XILINXMAIL,required=false \
+    --mount=type=secret,id=XILINXLOGIN,required=false <<'EOF'
 set -ex
 
-export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
-export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
-
 INSTALLER_BIN=$(find /mnt/installer -name "FPGAs_AdaptiveSoCs_Unified_SDI_*${XILINXVERSION}_*_Lin64.bin" | head -n 1)
-if [ -z "$INSTALLER_BIN" ]; then
-    echo "Installer binary not found!"
+INSTALLER_TAR=$(find /mnt/installer -name "FPGAs_AdaptiveSoCs_Unified_SDI_*${XILINXVERSION}_*.tar" | head -n 1)
+
+mkdir -p /tmp/extracted_xsetup
+
+if [ -n "$INSTALLER_TAR" ]; then
+    echo "=== Processing Full Offline Installer SFD (No Credentials Required) ==="
+    tar -xf "$INSTALLER_TAR" -C /tmp/extracted_xsetup --strip-components=1
+    cd /tmp/extracted_xsetup
+
+elif [ -n "$INSTALLER_BIN" ]; then
+    echo "=== Processing Web Installer Binary ==="
+    if [ ! -f /run/secrets/XILINXMAIL ] || [ ! -f /run/secrets/XILINXLOGIN ]; then
+        echo "Error: Web installer matched but credential secrets were not passed from the host!"
+        exit 1
+    fi
+
+    export XILINXMAIL=$(cat /run/secrets/XILINXMAIL)
+    export XILINXLOGIN=$(cat /run/secrets/XILINXLOGIN)
+
+    "$INSTALLER_BIN" --keep --noexec --target /tmp/extracted_xsetup
+    cd /tmp/extracted_xsetup
+
+## heredoc: keep this indention!
+    cat << 'EXP220' > /tmp/220.exp
+match_max 100000
+spawn ./xsetup -b AuthTokenGen
+expect -re "E-mail Address:"
+send -- "$env(XILINXMAIL)\r"
+expect -re "Password:"
+send -- "$env(XILINXLOGIN)\r"
+expect eof
+EXP220
+## heredoc done
+    su "${USER}" -c 'expect /tmp/220.exp'
+else
+    echo "Error: No matching Vivado installer file found in the build context!"
     exit 1
 fi
-
-"$INSTALLER_BIN" --keep --noexec --target /tmp/extracted_xsetup
-cd /tmp/extracted_xsetup
 
 cat << 'EXP210' > /tmp/210.exp
 match_max 100000
@@ -211,38 +239,32 @@ expect eof
 EXP210
 su "${USER}" -c 'expect /tmp/210.exp'
 
-cat << 'EXP220' > /tmp/220.exp
-match_max 100000
-spawn ./xsetup -b AuthTokenGen
-expect -re "E-mail Address:"
-send -- "$env(XILINXMAIL)\r"
-expect -re "Password:"
-send -- "$env(XILINXLOGIN)\r"
-expect eof
-EXP220
-su "${USER}" -c 'expect /tmp/220.exp'
-
 mkdir -p /tools/Xilinx
 chown -R ${USER}:${USER} /tools/Xilinx
 
 mkdir -p /home/${USER}/.Xilinx
 cp /tmp/install_config.txt /home/${USER}/.Xilinx/install_config.txt
+
+sed -i 's|^Destination=.*|Destination=/tools/Xilinx|g' /home/${USER}/.Xilinx/install_config.txt
 chown -R ${USER}:${USER} /home/${USER}/.Xilinx
 
 su "${USER}" -c './xsetup --agree XilinxEULA,3rdPartyEULA --batch Install --config /home/${USER}/.Xilinx/install_config.txt'
 
-cd /tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
-./install_drivers
+if [ -d "/tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers" ]; then
+    cd /tools/Xilinx/${XILINXVERSION}/data/xicom/cable_drivers/lin64/install_script/install_drivers
+    ./install_drivers
+fi
 
-/tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh || true
+if [ -f "/tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh" ]; then
+    /tools/Xilinx/${XILINXVERSION}/Vitis/scripts/installLibs.sh || true
+fi
 
 rm -rf /tools/Xilinx/.xinstall
 rm -rf /tmp/extracted_xsetup /home/${USER}/.Xilinx /tmp/*.exp
 EOF
 
 RUN ln -sf /usr/bin/python3 /usr/bin/python
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip3 install --no-cache-dir kas
+RUN pip3 install --no-cache-dir --break-system-packages kas
 
 COPY <<EOF /usr/local/bin/entrypoint.sh
 #!/bin/bash
