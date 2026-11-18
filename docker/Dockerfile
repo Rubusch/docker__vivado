@@ -2,23 +2,20 @@
 
 ARG XILINXVERSION="2026.2"
 
-FROM ubuntu:24.04 AS final
+FROM ubuntu:26.04 AS final
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG XILINXVERSION
 ARG USER DOXXXER_UID DOXXXER_GID
 ENV XILINXVERSION=${XILINXVERSION}
 
-RUN apt-get update && apt-get install -y wget software-properties-common && \
-    wget http://kernel.org && \
-    wget http://kernel.org || true && \
-    dpkg --add-architecture i386 && apt-get update && \
-    (dpkg -i libtinfo5_*.deb || apt-get install -f -y) && rm -f libtinfo5_*.deb
+RUN dpkg --add-architecture i386 && apt-get update
 
 RUN apt-get install -y \
     '^libxcb.*-dev' \
     apt-file \
     aptitude \
+    at-spi2-core \
     autoconf \
     automake \
     bc \
@@ -34,26 +31,27 @@ RUN apt-get install -y \
     colordiff \
     cpio \
     curl \
+    dbus-x11 \
     debianutils \
     device-tree-compiler \
     diffstat \
     dos2unix \
     doxygen \
-    dpkg-dev:i386 \
+    dpkg-dev \
     emacs \
     expect \
     exuberant-ctags \
     fakeroot \
     file \
     flex \
+    fonts-dejavu-core \
     g++ \
     gawk \
     gcc \
     gcc-multilib \
     git \
-    git-all \
     gnupg \
-    google-perftools \
+    libgoogle-perftools-dev \
     graphviz \
     gzip \
     haveged \
@@ -73,11 +71,9 @@ RUN apt-get install -y \
     libglx0 \
     libgl1-mesa-dri \
     libglu1-mesa-dev \
-    libgtk2.0-0:i386 \
-    liblz4-tool \
+    libgtk2.0-0t64 \
     libncurses6 \
-    libncurses5-dev \
-    libncursesw5-dev \
+    libncurses-dev \
     libsdl1.2-dev \
     libselinux1 \
     libsm6:i386 \
@@ -104,10 +100,11 @@ RUN apt-get install -y \
     libxrender1 \
     libxrender1:i386 \
     libxtst6 \
+    libgtk-3-0t64 \
+    libcanberra-gtk3-module \
     locales \
     lz4 \
     make \
-    mc \
     mercurial \
     mesa-common-dev \
     mtd-utils \
@@ -140,7 +137,6 @@ RUN apt-get install -y \
     tar \
     texinfo \
     tig \
-    tofrodos \
     tree \
     u-boot-tools \
     udev \
@@ -150,7 +146,7 @@ RUN apt-get install -y \
     wget \
     x11-apps \
     x11-utils \
-    xfce4 \
+    xdg-utils \
     xinetd \
     xmlto \
     xterm \
@@ -163,7 +159,11 @@ RUN apt-get install -y \
     && apt-get autoremove -y --purge \
     && rm -rf /var/lib/apt/lists/*
 
-## Bypass dash reconfigure limitation in Ubuntu 24.04 natively via symlinking
+## fix: xsim, hw_server and older bundled libraries still link against libtinfo
+RUN ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5 && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+
+## fix: bypass dash reconfigure limitation natively via symlinking
 RUN ln -sf /bin/bash /bin/sh
 
 RUN locale-gen en_US.UTF-8
@@ -327,10 +327,6 @@ if [ -d "\${XILINXDIR}" ] && [ "\${MY_USER}" != "\$(stat -c %U "\${XILINXDIR}")"
     echo "Adjusting permissions for .Xilinx..."
     sudo chown "\${MY_USER}":"\${MY_USER}" -R "\${XILINXDIR}"
 fi
-
-export SSH_OPTS="-F \${INTERNAL_SSH}/config"
-alias ssh="ssh -F \${INTERNAL_SSH}/config"
-alias git="GIT_SSH_COMMAND='ssh -F \${INTERNAL_SSH}/config' git"
 
 echo "=== Environment Ready ==="
 echo
