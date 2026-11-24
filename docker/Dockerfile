@@ -79,6 +79,7 @@ RUN apt-get install -y \
     libsm6:i386 \
     libssl-dev \
     libstdc++6:i386 \
+    libstdc++-14-dev \
     libtool \
     libx11-6 \
     libx11-6:i386 \
