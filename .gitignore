@@ -11,10 +11,7 @@
 ## ignore output folder
 workspace
 download
-
-## docker base image
-ubu*04
-peta-*
+docker/configs/.Xilinx
 
 ## docker environment
 .env
